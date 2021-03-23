@@ -10,7 +10,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-
+import SettingsIcon from '@material-ui/icons/Settings';
+import ListIcon from '@material-ui/icons/List';
+import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
 }));
 
@@ -47,6 +49,7 @@ export default function AnkiDrawer(props) {
         }}
       >
         <div className={classes.drawerHeader}>
+          資格取得補助システム
           <IconButton onClick={props.handleDrawerClose}>
             {theme.direction === 'ltr' ? (
               <ChevronLeftIcon />
@@ -57,11 +60,53 @@ export default function AnkiDrawer(props) {
         </div>
         <Divider />
         <List>
-          <ListItem button key="home">
+          <ListItem
+            button
+            key="home"
+            onClick={() => {
+              props.setView('home');
+            }}
+          >
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="home" />
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem
+            button
+            key="traning"
+            onClick={() => {
+              props.setView('traning');
+            }}
+          >
+            <ListItemIcon>
+              <PlayCircleFilledWhiteIcon />
+            </ListItemIcon>
+            <ListItemText primary="Start Traning" />
+          </ListItem>
+          <ListItem
+            button
+            key="queslist"
+            onClick={() => {
+              props.setView('queslist');
+            }}
+          >
+            <ListItemIcon>
+              <ListIcon />
+            </ListItemIcon>
+            <ListItemText primary="Questions List" />
+          </ListItem>
+          <ListItem
+            button
+            key="setting"
+            onClick={() => {
+              props.setView('setting');
+            }}
+          >
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
           </ListItem>
         </List>
       </Drawer>

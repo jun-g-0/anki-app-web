@@ -1,7 +1,6 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,11 +53,9 @@ export default function AnkiAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            資格取得補助システム
-          </Typography>
         </Toolbar>
       </AppBar>
+      <Toolbar />
     </React.Fragment>
   );
 }
