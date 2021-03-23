@@ -21,19 +21,17 @@ function App() {
       <header className="App-header">
         <h1>覚えるンゴ</h1>
       </header>
-      <body>
-        <navigator>
-          <ul>
-            {questions.map((questions) => (
-              <ul key={questions.id || questions.question}>
-                <h5>{questions.question}</h5>
-                <p>{questions.desc || 'no desc'}</p>
-                <button onClick={(e) => console.log(e.target)}>console</button>
-              </ul>
-            ))}
-          </ul>
-        </navigator>
-      </body>
+      <div>
+        <ul>
+          {questions.map((questions) => (
+            <ul key={questions.id || questions.question}>
+              <h5>{questions.question}</h5>
+              <p>{questions.desc || 'no desc'}</p>
+              <button onClick={(e) => console.log(e.target)}>console</button>
+            </ul>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
