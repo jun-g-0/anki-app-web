@@ -5,5 +5,3 @@ workflows:
   node-tests:
     jobs:
       - node/test
-    branches:
-      only: main
