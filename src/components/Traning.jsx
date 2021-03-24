@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   nav: {
     display: 'flex',
-    flexFlow: 'column center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     padding: '20px',
   },
   afterAnswer: {
@@ -80,6 +81,7 @@ export default function AnkiTraning(props) {
           </div>
         </Typography>
       </Container>
+
       <Container maxWidth="xl" className={classes.home}>
         <FormControl component="fieldset">
           <RadioGroup
@@ -102,6 +104,7 @@ export default function AnkiTraning(props) {
           </RadioGroup>
         </FormControl>
       </Container>
+
       <Container maxWidth="xl" className={classes.home}>
         {answered &&
         +value === props.choices.filter((e) => e.is_correct)[0].id ? (
@@ -118,23 +121,19 @@ export default function AnkiTraning(props) {
           正答
         </Button>
       </Container>
+
+      <Container maxWidth="xl" className={classes.home}>
+        <Button variant="contained" color="primary">
+          解説
+        </Button>
+      </Container>
+
       <Container maxWidth="xl" className={classes.nav}>
         <Button variant="contained" color="primary" onClick={handleMovePrev}>
           前の問題
         </Button>
         <Button variant="contained" color="primary" onClick={handleMoveNext}>
           次の問題
-        </Button>
-      </Container>
-      <Container maxWidth="xl" className={classes.home}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            props.setQuesNum(2);
-          }}
-        >
-          解説
         </Button>
       </Container>
     </React.Fragment>
