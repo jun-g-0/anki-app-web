@@ -25,8 +25,8 @@ exports.seed = function (knex) {
         },
         {
           id: 3,
-          question: `質問3の問題文です。選択式ではなく、書き込み式です。`,
-          desc: `質問1の解説です。`,
+          question: `質問3の問題文です。`,
+          desc: `質問3の解説です。`,
         },
       ]);
     });

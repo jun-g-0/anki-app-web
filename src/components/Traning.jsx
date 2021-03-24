@@ -9,11 +9,18 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 
+import Typography from '@material-ui/core/Typography';
+
 const useStyles = makeStyles((theme) => ({
   home: {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
+    padding: '20px',
+  },
+  nav: {
+    display: 'flex',
+    flexFlow: 'column center',
     padding: '20px',
   },
   afterAnswer: {
@@ -67,7 +74,11 @@ export default function AnkiTraning(props) {
     <React.Fragment>
       <Container maxWidth="xl" className={classes.home}>
         <Box>ID: {props.question.id}</Box>
-        <Box>{props.question.question}</Box>
+        <Typography>
+          <div style={{ whiteSpace: 'pre-line' }}>
+            {props.question.question}
+          </div>
+        </Typography>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
         <FormControl component="fieldset">
@@ -107,7 +118,7 @@ export default function AnkiTraning(props) {
           正答
         </Button>
       </Container>
-      <Container maxWidth="xl" className={classes.home}>
+      <Container maxWidth="xl" className={classes.nav}>
         <Button variant="contained" color="primary" onClick={handleMovePrev}>
           前の問題
         </Button>
