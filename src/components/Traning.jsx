@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import axios from 'axios';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 
 const useStyles = makeStyles((theme) => ({
   home: {
@@ -37,9 +35,32 @@ export default function AnkiTraning(props) {
   // controll answer
   const [answered, setAnswered] = useState(false);
 
-  const handleAnswered = (e) => {
+  const handleAnsweredTrue = () => {
     console.log(value);
     setAnswered(true);
+  };
+
+  const handleAnsweredFalse = () => {
+    setAnswered(false);
+  };
+
+  // controll move
+  const handleMoveNext = () => {
+    console.log(props.questions.length);
+    if (props.quesNum === props.questions.length - 1) {
+      return;
+    }
+    handleAnsweredFalse();
+    props.setQuesNum(props.quesNum + 1);
+  };
+
+  // controll move
+  const handleMovePrev = () => {
+    if (props.quesNum === 0) {
+      return;
+    }
+    handleAnsweredFalse();
+    props.setQuesNum(props.quesNum - 1);
   };
 
   return (
@@ -73,34 +94,24 @@ export default function AnkiTraning(props) {
       <Container maxWidth="xl" className={classes.home}>
         {answered &&
         +value === props.choices.filter((e) => e.is_correct)[0].id ? (
-          // <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
-          <Box>正解です。</Box>
-        ) : (
+          <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
+        ) : // <Box>正解です。</Box>
+        answered ? (
           <Box>不正解です。</Box>
-        )}
-        <Button variant="contained" color="primary" onClick={handleAnswered}>
+        ) : null}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAnsweredTrue}
+        >
           正答
         </Button>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            props.setView('traning');
-            props.setQuesNum(1);
-          }}
-        >
+        <Button variant="contained" color="primary" onClick={handleMovePrev}>
           前の問題
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            props.setView('traning');
-            props.setQuesNum(1);
-          }}
-        >
+        <Button variant="contained" color="primary" onClick={handleMoveNext}>
           次の問題
         </Button>
       </Container>
@@ -109,7 +120,7 @@ export default function AnkiTraning(props) {
           variant="contained"
           color="primary"
           onClick={() => {
-            props.setView('traning');
+            props.setQuesNum(2);
           }}
         >
           解説
