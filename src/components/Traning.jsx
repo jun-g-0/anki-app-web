@@ -75,7 +75,7 @@ export default function AnkiTraning(props) {
         +value === props.choices.filter((e) => e.is_correct)[0].id ? (
           <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
         ) : (
-          <Box>不正解</Box>
+          <Box>不正解です。</Box>
         )}
         <Button variant="contained" color="primary" onClick={handleAnswered}>
           正答
