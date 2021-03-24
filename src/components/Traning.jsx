@@ -3,6 +3,13 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import axios from 'axios';
+
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const useStyles = makeStyles((theme) => ({
   home: {
@@ -15,11 +22,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AnkiTraning(props) {
   const classes = useStyles();
-  const [answers, setAnswers] = useState([]);
+
+  // controll data
+  const [choices, setChoices] = useState([]);
 
   useEffect(() => {
-    console.log(props.question);
+    fetchChoices();
   }, []);
+
+  async function fetchChoices() {
+    const apiData = await axios.get('/api/v1/choices/' + props.question.id);
+    setChoices(apiData.data);
+  }
+
+  // controll select
+  const [select, setSelect] = useState('');
+
+  const handleChange = (e) => {
+    setSelect(e.target.value);
+  };
 
   return (
     <React.Fragment>
@@ -28,8 +49,24 @@ export default function AnkiTraning(props) {
         <Box>{props.question.question}</Box>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
-        <Box>ID: {props.question.id}</Box>
-        <Box>{props.question.question}</Box>
+        <FormControl component="fieldset">
+          <FormLabel component="legend"></FormLabel>
+          <RadioGroup
+            aria-label="choices"
+            name="choices"
+            value={select}
+            onChange={handleChange}
+          >
+            {choices.map((e) => (
+              <FormControlLabel
+                key={e.id}
+                value={e.id}
+                control={<Radio />}
+                label={e.choice}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
         <Button
@@ -37,7 +74,6 @@ export default function AnkiTraning(props) {
           color="primary"
           onClick={() => {
             props.setView('traning');
-            props.setQuesNum(1);
           }}
         >
           正答
@@ -59,7 +95,6 @@ export default function AnkiTraning(props) {
           color="primary"
           onClick={() => {
             props.setView('traning');
-            props.setQuesNum(1);
           }}
         >
           次の問題
@@ -71,7 +106,6 @@ export default function AnkiTraning(props) {
           color="primary"
           onClick={() => {
             props.setView('traning');
-            props.setQuesNum(1);
           }}
         >
           解説
