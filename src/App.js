@@ -25,6 +25,7 @@ export default function App() {
 
   // controll data
   const [questions, setQuestions] = useState([]);
+  const [choices, setChoices] = useState([]);
   const [quesNum, setQuesNum] = useState(1);
 
   useEffect(() => {
@@ -35,6 +36,9 @@ export default function App() {
     const apiData = await axios.get('/api/v1/questions');
     console.log(apiData.data);
     setQuestions(apiData.data);
+    const choicesData = await axios.get('/api/v1/choices');
+    console.log(choicesData.data);
+    setChoices(choicesData.data);
   }
 
   return (
@@ -54,6 +58,7 @@ export default function App() {
       {view === 'traning' && (
         <AnkiTraning
           question={questions.filter((e) => e.id === quesNum)[0]}
+          choices={choices.filter((e) => e.question_id === quesNum)}
           setView={setView}
           setQuesNum={setQuesNum}
         />

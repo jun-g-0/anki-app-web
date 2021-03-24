@@ -27,19 +27,6 @@ const useStyles = makeStyles((theme) => ({
 export default function AnkiTraning(props) {
   const classes = useStyles();
 
-  // controll data
-  const [choices, setChoices] = useState([]);
-
-  useEffect(() => {
-    fetchChoices();
-  }, []);
-
-  async function fetchChoices() {
-    const apiData = await axios.get('/api/v1/choices/' + props.question.id);
-    console.log(apiData.data);
-    setChoices(apiData.data);
-  }
-
   // controll select
   const [value, setValue] = useState('');
 
@@ -69,7 +56,7 @@ export default function AnkiTraning(props) {
             value={value}
             onChange={handleChange}
           >
-            {choices.map((e) => (
+            {props.choices.map((e) => (
               <FormControlLabel
                 key={e.id}
                 value={String(e.id)}
@@ -84,7 +71,8 @@ export default function AnkiTraning(props) {
         </FormControl>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
-        {answered && +value === choices.filter((e) => e.is_correct)[0].id ? (
+        {answered &&
+        +value === props.choices.filter((e) => e.is_correct)[0].id ? (
           <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
         ) : null}
         <Button variant="contained" color="primary" onClick={handleAnswered}>
