@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     padding: '20px',
   },
+  afterAnswer: {
+    color: 'green',
+    fontWeight: '800',
+  },
 }));
 
 export default function AnkiTraning(props) {
@@ -32,14 +36,23 @@ export default function AnkiTraning(props) {
 
   async function fetchChoices() {
     const apiData = await axios.get('/api/v1/choices/' + props.question.id);
+    console.log(apiData.data);
     setChoices(apiData.data);
   }
 
   // controll select
-  const [select, setSelect] = useState('');
+  const [value, setValue] = useState('');
 
   const handleChange = (e) => {
-    setSelect(e.target.value);
+    setValue(e.target.value);
+  };
+
+  // controll answer
+  const [answered, setAnswered] = useState(false);
+
+  const handleAnswered = (e) => {
+    console.log(value);
+    setAnswered(true);
   };
 
   return (
@@ -50,32 +63,31 @@ export default function AnkiTraning(props) {
       </Container>
       <Container maxWidth="xl" className={classes.home}>
         <FormControl component="fieldset">
-          <FormLabel component="legend"></FormLabel>
           <RadioGroup
             aria-label="choices"
-            name="choices"
-            value={select}
+            name="choices1"
+            value={value}
             onChange={handleChange}
           >
             {choices.map((e) => (
               <FormControlLabel
                 key={e.id}
-                value={e.id}
+                value={String(e.id)}
                 control={<Radio />}
                 label={e.choice}
+                className={
+                  answered && e.is_correct ? classes.afterAnswer : null
+                }
               />
             ))}
           </RadioGroup>
         </FormControl>
       </Container>
       <Container maxWidth="xl" className={classes.home}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            props.setView('traning');
-          }}
-        >
+        {answered && +value === choices.filter((e) => e.is_correct)[0].id ? (
+          <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
+        ) : null}
+        <Button variant="contained" color="primary" onClick={handleAnswered}>
           正答
         </Button>
       </Container>
@@ -95,6 +107,7 @@ export default function AnkiTraning(props) {
           color="primary"
           onClick={() => {
             props.setView('traning');
+            props.setQuesNum(1);
           }}
         >
           次の問題

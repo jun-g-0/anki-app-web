@@ -55,6 +55,7 @@ export default function App() {
         <AnkiTraning
           question={questions.filter((e) => e.id === quesNum)[0]}
           setView={setView}
+          setQuesNum={setQuesNum}
         />
       )}
       {view === 'queslist' && <AnkiQuesList questions={questions} />}
