@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+// for design
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+// for components
 import AnkiDrawer from './components/Drawer';
 import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
@@ -22,6 +25,7 @@ export default function App() {
 
   // controll data
   const [questions, setQuestions] = useState([]);
+  const [choices, setChoices] = useState([]);
   const [quesNum, setQuesNum] = useState(1);
 
   useEffect(() => {
@@ -29,9 +33,12 @@ export default function App() {
   }, []);
 
   async function fetchQuestions() {
-    const apiData = await axios.get('/api/questions');
+    const apiData = await axios.get('/api/v1/questions');
     console.log(apiData.data);
     setQuestions(apiData.data);
+    const choicesData = await axios.get('/api/v1/choices');
+    console.log(choicesData.data);
+    setChoices(choicesData.data);
   }
 
   return (
@@ -49,7 +56,12 @@ export default function App() {
         <AnkiHome setView={setView} setQuesNum={setQuesNum} />
       )}
       {view === 'traning' && (
-        <AnkiTraning question={questions.filter((e) => e.id === quesNum)[0]} />
+        <AnkiTraning
+          question={questions.filter((e) => e.id === quesNum)[0]}
+          choices={choices.filter((e) => e.question_id === quesNum)}
+          setView={setView}
+          setQuesNum={setQuesNum}
+        />
       )}
       {view === 'queslist' && <AnkiQuesList questions={questions} />}
     </React.Fragment>
