@@ -25,8 +25,9 @@ export default function App() {
 
   // controll data
   const [questions, setQuestions] = useState([]);
+  const [qids, setQids] = useState([]);
   const [choices, setChoices] = useState([]);
-  const [quesNum, setQuesNum] = useState(1);
+  const [quesNum, setQuesNum] = useState(0);
 
   useEffect(() => {
     fetchQuestions();
@@ -36,6 +37,7 @@ export default function App() {
     const apiData = await axios.get('/api/v1/questions');
     console.log(apiData.data);
     setQuestions(apiData.data);
+    setQids(apiData.data.map((e) => e.id));
     const choicesData = await axios.get('/api/v1/choices');
     console.log(choicesData.data);
     setChoices(choicesData.data);
@@ -57,8 +59,10 @@ export default function App() {
       )}
       {view === 'traning' && (
         <AnkiTraning
-          question={questions.filter((e) => e.id === quesNum)[0]}
-          choices={choices.filter((e) => e.question_id === quesNum)}
+          questions={questions}
+          question={questions.filter((e) => e.id === qids[quesNum])[0]}
+          quesNum={quesNum}
+          choices={choices.filter((e) => e.question_id === qids[quesNum])}
           setView={setView}
           setQuesNum={setQuesNum}
         />
