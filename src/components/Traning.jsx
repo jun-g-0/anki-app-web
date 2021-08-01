@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_) => ({
   home: {
     display: 'flex',
     alignItems: 'center',
@@ -34,85 +34,85 @@ export default function AnkiTraning(props) {
   const classes = useStyles();
 
   // controll select
-  const [value, setValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+  const [quesNum, setQuesNum] = useState(0);
 
   const handleChange = (e) => {
-    setValue(e.target.value);
+    setSelectedValue(e.target.value);
   };
 
   // controll answer
   const [answered, setAnswered] = useState(false);
 
   const handleAnsweredTrue = () => {
-    console.log(value);
     setAnswered(true);
   };
 
   const handleAnsweredFalse = () => {
     setAnswered(false);
+    setSelectedValue('');
   };
 
   // controll move
   const handleMoveNext = () => {
-    console.log(props.questions.length);
-    if (props.quesNum === props.questions.length - 1) {
-      return;
+
+    for (const e of document.getElementsByName('choicesRadio')) {
+      console.log(e)
     }
+
     handleAnsweredFalse();
-    props.setQuesNum(props.quesNum + 1);
+    console.log(props.questions[quesNum + 1]);
+    setQuesNum(quesNum + 1);
   };
 
   // controll move
   const handleMovePrev = () => {
-    if (props.quesNum === 0) {
-      return;
+
+    for (const e of document.getElementsByName('choicesRadio')) {
+      console.log(e)
     }
+
     handleAnsweredFalse();
-    props.setQuesNum(props.quesNum - 1);
+    console.log(props.questions[quesNum - 1]);
+    setQuesNum(quesNum - 1);
   };
 
   return (
     <React.Fragment>
       <Container maxWidth="xl" className={classes.home}>
-        <Box>ID: {props.question.id}</Box>
-        <Typography>
-          <div style={{ whiteSpace: 'pre-line' }}>
-            {props.question.question}
-          </div>
-        </Typography>
+        <Box>ID: {props.questions[quesNum].questionId}</Box>
+          <p
+            style={{ whiteSpace: 'pre-line' }}>
+            {props.questions[quesNum].questionText.replaceAll('\\n', '\n')}
+          </p>
       </Container>
 
       <Container maxWidth="xl" className={classes.home}>
         <FormControl component="fieldset">
           <RadioGroup
-            aria-label="choices"
-            name="choices1"
-            value={value}
+            aria-label="choicesRadio"
+            name="choicesRadio"
+            value={selectedValue} // 選択肢はselectedValueと連動している
             onChange={handleChange}
           >
-            {props.choices.map((e) => (
+            { // 選択肢を一つずつ生成
+            props.questions[quesNum].choices.map((e) => (
               <FormControlLabel
-                key={e.id}
-                value={String(e.id)}
+                key={e.choiceId}
+                value={String(e.choiceId)}
                 control={<Radio />}
-                label={e.choice}
-                className={
-                  answered && e.is_correct ? classes.afterAnswer : null
-                }
+                label={e.choiceText}
+                className={answered ? classes.afterAnswer : null}
               />
             ))}
           </RadioGroup>
         </FormControl>
       </Container>
 
+      {
+        // 正答表示/解説表示欄
+      }
       <Container maxWidth="xl" className={classes.home}>
-        {answered &&
-        +value === props.choices.filter((e) => e.is_correct)[0].id ? (
-          <Box>🎉🎉🎊💮正解です!💮🎊🎉🎉</Box>
-        ) : // <Box>正解です。</Box>
-        answered ? (
-          <Box>不正解です。</Box>
-        ) : null}
         <Button
           variant="contained"
           color="primary"
@@ -120,21 +120,30 @@ export default function AnkiTraning(props) {
         >
           正答
         </Button>
+        {(answered && +selectedValue === +props.questions[quesNum].answer)
+            ? (<p>🎉🎉🎊💮正解です!💮🎊🎉🎉</p>)
+          : answered
+            ? (<p>不正解です。</p>)
+          : null}
+        {answered
+          && <div style={{ whiteSpace: 'pre-line' }}>
+              <p>解説</p>
+              <p>{props.questions[quesNum].desc.replaceAll('\\n', '\n')}</p>
+             </div>}
       </Container>
 
-      <Container maxWidth="xl" className={classes.home}>
-        <Button variant="contained" color="primary">
-          解説
-        </Button>
-      </Container>
-
+      {
+        // ナビゲーション欄
+      }
       <Container maxWidth="xl" className={classes.nav}>
-        <Button variant="contained" color="primary" onClick={handleMovePrev}>
+        {(quesNum !== 0)
+          && <Button variant="contained" color="primary" onClick={handleMovePrev}>
           前の問題
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleMoveNext}>
+        </Button>}
+        {(quesNum !== props.questions.length - 1)
+          && <Button variant="contained" color="primary" onClick={handleMoveNext}>
           次の問題
-        </Button>
+        </Button>}
       </Container>
     </React.Fragment>
   );

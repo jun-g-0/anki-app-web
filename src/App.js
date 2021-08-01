@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +10,10 @@ import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
 import AnkiTraning from './components/Traning';
 
+// for firebase
+import firebase, { db } from './Firebase.js';
+
+// React
 export default function App() {
   const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
@@ -25,22 +28,22 @@ export default function App() {
 
   // controll data
   const [questions, setQuestions] = useState([]);
-  const [qids, setQids] = useState([]);
-  const [choices, setChoices] = useState([]);
-  const [quesNum, setQuesNum] = useState(0);
 
   useEffect(() => {
     fetchQuestions();
   }, []);
 
   async function fetchQuestions() {
-    const apiData = await axios.get('/api/v1/questions');
-    console.log(apiData.data);
-    setQuestions(apiData.data);
-    setQids(apiData.data.map((e) => e.id));
-    const choicesData = await axios.get('/api/v1/choices');
-    console.log(choicesData.data);
-    setChoices(choicesData.data);
+    // get all qa-data
+    const snapshot = await db.collection('demo-qa').get();
+
+    let tmp = [];
+    snapshot.forEach((doc) => {
+      tmp.push(doc.data());
+    });
+    tmp.sort((a, b) => +a.questionId - +b.questionId);
+    setQuestions(tmp);
+    console.log(tmp);
   }
 
   return (
@@ -54,18 +57,9 @@ export default function App() {
         setView={setView}
       ></AnkiDrawer>
 
-      {view === 'home' && (
-        <AnkiHome setView={setView} setQuesNum={setQuesNum} />
-      )}
+      {view === 'home' && <AnkiHome setView={setView} />}
       {view === 'traning' && (
-        <AnkiTraning
-          questions={questions}
-          question={questions.filter((e) => e.id === qids[quesNum])[0]}
-          quesNum={quesNum}
-          choices={choices.filter((e) => e.question_id === qids[quesNum])}
-          setView={setView}
-          setQuesNum={setQuesNum}
-        />
+        <AnkiTraning questions={questions} setView={setView} />
       )}
       {view === 'queslist' && <AnkiQuesList questions={questions} />}
     </React.Fragment>
