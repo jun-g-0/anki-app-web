@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -13,7 +13,21 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import firebase from '../Firebase';
+
 const drawerWidth = 240;
+
+function firebaseLogout() {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      console.log('Logouted.')
+    })
+    .catch((error) => {
+      console.log('Fail to logout. error: ' + error)
+    });
+}
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -36,6 +50,14 @@ const useStyles = makeStyles((theme) => ({
 export default function AnkiDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
+
+  const [user, setUser] = useState();
+
+  useEffect(()=> {
+    firebase.auth().onAuthStateChanged(user => {
+      setUser(user);
+    });
+  }, [])
 
   return (
     <React.Fragment>
@@ -70,7 +92,7 @@ export default function AnkiDrawer(props) {
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="Home" />
+            <ListItemText primary="ホーム" />
           </ListItem>
           <ListItem
             button
@@ -82,7 +104,7 @@ export default function AnkiDrawer(props) {
             <ListItemIcon>
               <PlayCircleFilledWhiteIcon />
             </ListItemIcon>
-            <ListItemText primary="Start Traning" />
+            <ListItemText primary="演習" />
           </ListItem>
           <ListItem
             button
@@ -94,7 +116,7 @@ export default function AnkiDrawer(props) {
             <ListItemIcon>
               <ListIcon />
             </ListItemIcon>
-            <ListItemText primary="Questions List" />
+            <ListItemText primary="質問一覧" />
           </ListItem>
           <ListItem
             button
@@ -106,7 +128,23 @@ export default function AnkiDrawer(props) {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="Settings" />
+            <ListItemText primary="設定変更" />
+          </ListItem>
+          <ListItem
+            button
+            key="logout"
+            onClick={() => {
+              firebaseLogout();
+              props.setView('home');
+            }}
+          >
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="ログアウト"/>
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={user && `ユーザ: ${user.displayName}さん` }/>
           </ListItem>
         </List>
       </Drawer>
