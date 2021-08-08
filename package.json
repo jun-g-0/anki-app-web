@@ -47,6 +47,5 @@
     "@types/react-router-dom": "^5.1.7",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.7"
-  },
-  "proxy": "http://localhost:9000"
+  }
 }
