@@ -13,7 +13,7 @@ test('renders learn react link', () => {
 describe('Unit / App.js > defaultSetting', () => {
   console.log('defaultSetting: ' + defaultSetting);
   test('have tapMode', () => {
-    expect(typeof defaultSetting.tapMode).toBe('boolean');
+    expect(typeof defaultSetting.tapMode).toBe('string');
   });
 
   test('have toggle function', () => {
