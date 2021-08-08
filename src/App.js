@@ -9,9 +9,28 @@ import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
 import AnkiTraning from './components/Traning';
+import AnkiSetting from './components/Setting';
 
 // for firebase
 import firebase, { db } from './Firebase.js';
+
+// Setting context
+export const defaultSetting = {
+  toggle: function (key) {
+    this[key] = !this[key];
+  },
+  change: function (key, val) {
+    this[key] = val;
+  },
+  tapMode: true,
+  colorTheme: 'purple',
+  headColor: 'purple',
+  backColor: 'gray',
+  textColor: 'black',
+  textSize: '10px',
+};
+
+export const SettingContext = React.createContext(defaultSetting);
 
 // React
 export default function App() {
@@ -36,7 +55,6 @@ export default function App() {
   async function fetchQuestions() {
     // get all qa-data
     const snapshot = await db.collection('demo-qa').get();
-
     let tmp = [];
     snapshot.forEach((doc) => {
       tmp.push(doc.data());
@@ -62,6 +80,7 @@ export default function App() {
         <AnkiTraning questions={questions} setView={setView} />
       )}
       {view === 'queslist' && <AnkiQuesList questions={questions} />}
+      {view === 'setting' && <AnkiSetting />}
     </React.Fragment>
   );
 }

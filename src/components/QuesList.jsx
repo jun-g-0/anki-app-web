@@ -5,10 +5,14 @@ export default function AnkiQuesList(props) {
   return (
     <React.Fragment>
       <ul>
-        {props.questions.map((questions) => (
-          <ul key={questions.id || questions.question}>
-            <h5>{questions.question}</h5>
-            <p>{questions.desc || 'no desc'}</p>
+        {props.questions.map((question) => (
+          <ul key={question.id}>
+            <p style={{ whiteSpace: 'pre-line' }}>
+              {question.questionText.replaceAll('\\n', '\n')}
+            </p>
+            <p  style={{ whiteSpace: 'pre-line' }}>
+              {question.desc.replaceAll('\\n', '\n') || 'no desc'}
+            </p>
             <Button
               variant="contained"
               color="secondary"

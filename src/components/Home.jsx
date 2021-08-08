@@ -18,24 +18,24 @@ const useStyles = makeStyles(() => ({
 
 const loginUiConfig = {
   signInFlow: 'popup',
-  signInSuccessUrl: "/",
+  signInSuccessUrl: '/',
   signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ],
-}
+};
 
 export default function AnkiHome(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
 
-  useEffect(()=> {
-    firebase.auth().onAuthStateChanged(user => {
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
     });
-  }, [])
+  }, []);
 
   return (
     <React.Fragment>
@@ -57,12 +57,16 @@ export default function AnkiHome(props) {
         >
           演習開始
         </Button>
-        <p>
-          {user ?
-            user.displayName + "さん、こんにちは！" :
-            <StyledFirebaseAuth uiConfig={loginUiConfig} firebaseAuth={firebase.auth()}/>
-          }
-        </p>
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {user ? (
+            `\n${user.displayName}さん、こんにちは！`
+          ) : (
+            <StyledFirebaseAuth
+              uiConfig={loginUiConfig}
+              firebaseAuth={firebase.auth()}
+            />
+          )}
+        </div>
       </Container>
     </React.Fragment>
   );

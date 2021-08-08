@@ -22,10 +22,10 @@ function firebaseLogout() {
     .auth()
     .signOut()
     .then(() => {
-      console.log('Logouted.')
+      console.log('Logouted.');
     })
     .catch((error) => {
-      console.log('Fail to logout. error: ' + error)
+      console.log('Fail to logout. error: ' + error);
     });
 }
 
@@ -53,11 +53,11 @@ export default function AnkiDrawer(props) {
 
   const [user, setUser] = useState();
 
-  useEffect(()=> {
-    firebase.auth().onAuthStateChanged(user => {
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
     });
-  }, [])
+  }, []);
 
   return (
     <React.Fragment>
@@ -87,6 +87,7 @@ export default function AnkiDrawer(props) {
             key="home"
             onClick={() => {
               props.setView('home');
+              props.handleDrawerClose();
             }}
           >
             <ListItemIcon>
@@ -99,6 +100,7 @@ export default function AnkiDrawer(props) {
             key="traning"
             onClick={() => {
               props.setView('traning');
+              props.handleDrawerClose();
             }}
           >
             <ListItemIcon>
@@ -111,6 +113,7 @@ export default function AnkiDrawer(props) {
             key="queslist"
             onClick={() => {
               props.setView('queslist');
+              props.handleDrawerClose();
             }}
           >
             <ListItemIcon>
@@ -123,6 +126,7 @@ export default function AnkiDrawer(props) {
             key="setting"
             onClick={() => {
               props.setView('setting');
+              props.handleDrawerClose();
             }}
           >
             <ListItemIcon>
@@ -136,15 +140,16 @@ export default function AnkiDrawer(props) {
             onClick={() => {
               firebaseLogout();
               props.setView('home');
+              props.handleDrawerClose();
             }}
           >
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="ログアウト"/>
+            <ListItemText primary="ログアウト" />
           </ListItem>
           <ListItem>
-            <ListItemText primary={user && `ユーザ: ${user.displayName}さん` }/>
+            <ListItemText primary={user && `ユーザ: ${user.displayName}さん`} />
           </ListItem>
         </List>
       </Drawer>
