@@ -38,15 +38,13 @@ export default function AnkiTraning(props) {
   // controll select
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  let answerSetting = React.useContext(SettingContext);
+  let settings = React.useContext(SettingContext);
 
   const handleChange = (e) => {
-    // if (answerSetting.tapMode) {
-    //   handleAnsweredTrue();
-    // }
+    if (settings.tapMode === 'tapMode') {
+      handleAnsweredTrue();
+    }
     setSelectedValue(e.target.value);
-    console.log('SettingContext: ' + SettingContext);
-    console.log('answerSetting:  ' + answerSetting);
   };
 
   // controll answer
@@ -63,21 +61,12 @@ export default function AnkiTraning(props) {
 
   // controll move
   const handleMoveNext = () => {
-    for (const e of document.getElementsByName('choicesRadio')) {
-      console.log(e);
-    }
-
     handleAnsweredFalse();
     console.log(props.questions[quesNum + 1]);
     setQuesNum(quesNum + 1);
   };
 
-  // controll move
   const handleMovePrev = () => {
-    for (const e of document.getElementsByName('choicesRadio')) {
-      console.log(e);
-    }
-
     handleAnsweredFalse();
     console.log(props.questions[quesNum - 1]);
     setQuesNum(quesNum - 1);
@@ -85,18 +74,18 @@ export default function AnkiTraning(props) {
 
   return (
     <React.Fragment>
-      <Container maxWidth="md" className={classes.home}>
+      <Container maxWidth='md' className={classes.home}>
         <Box>ID: {props.questions[quesNum].questionId}</Box>
         <p style={{ whiteSpace: 'pre-line' }}>
           {props.questions[quesNum].questionText.replaceAll('\\n', '\n')}
         </p>
       </Container>
 
-      <Container maxWidth="md" className={classes.home}>
-        <FormControl component="fieldset">
+      <Container maxWidth='md' className={classes.home}>
+        <FormControl component='fieldset'>
           <RadioGroup
-            aria-label="choicesRadio"
-            name="choicesRadio"
+            aria-label='choicesRadio'
+            name='choicesRadio'
             value={selectedValue} // 選択肢はselectedValueと連動
             onChange={handleChange}
           >
@@ -119,17 +108,16 @@ export default function AnkiTraning(props) {
       {
         // 正答表示/解説表示欄
       }
-      <Container maxWidth="md" className={classes.home}>
-        {
-          // {answerSetting.tapMode &&
+      <Container maxWidth='md' className={classes.home}>
+        {settings.tapMode === 'buttonMode' && (
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             onClick={handleAnsweredTrue}
           >
             正答
           </Button>
-        }
+        )}
         {answered && +selectedValue === +props.questions[quesNum].answer ? (
           <p>正解です!🎉</p>
         ) : answered ? (
@@ -146,14 +134,14 @@ export default function AnkiTraning(props) {
       {
         // ナビゲーション欄
       }
-      <Container maxWidth="md" className={classes.nav}>
+      <Container maxWidth='md' className={classes.nav}>
         {quesNum !== 0 && (
-          <Button variant="contained" color="primary" onClick={handleMovePrev}>
+          <Button variant='contained' color='primary' onClick={handleMovePrev}>
             前の問題
           </Button>
         )}
         {quesNum !== props.questions.length - 1 && (
-          <Button variant="contained" color="primary" onClick={handleMoveNext}>
+          <Button variant='contained' color='primary' onClick={handleMoveNext}>
             次の問題
           </Button>
         )}

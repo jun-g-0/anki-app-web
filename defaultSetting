@@ -1,0 +1,4 @@
+[main 92ca691] feat: add unit test for App.js
+ 10 files changed, 165 insertions(+), 709 deletions(-)
+ delete mode 100644 src/App copy.js
+ create mode 100644 src/components/Setting.jsx

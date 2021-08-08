@@ -22,7 +22,7 @@ export const defaultSetting = {
   change: function (key, val) {
     this[key] = val;
   },
-  tapMode: true,
+  tapMode: 'tapMode',
   colorTheme: 'purple',
   headColor: 'purple',
   backColor: 'gray',
