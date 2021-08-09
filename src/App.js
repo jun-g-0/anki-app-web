@@ -28,6 +28,7 @@ export const defaultSetting = {
   backColor: 'gray',
   textColor: 'black',
   textSize: '10px',
+  history: {},
 };
 
 export const SettingContext = React.createContext(defaultSetting);
