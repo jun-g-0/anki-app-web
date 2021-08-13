@@ -12,7 +12,7 @@ import AnkiTraning from './components/Traning';
 import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
 
 // for firebase
-import firebase, { db } from './Firebase.js';
+import firebase, { db } from './Firebase';
 
 type Setting = {
   tapMode: string;
@@ -30,7 +30,7 @@ type Choice = {
   choiceText: string;
 };
 
-type Question = {
+export type Question = {
   questionId: number;
   questionText: string;
   type: string;

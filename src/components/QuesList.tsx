@@ -1,14 +1,19 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { Container, Typography, Box } from '@material-ui/core';
+import { Question } from '../App'
 
-export default function AnkiQuesList(props) {
+type Props = {
+  questions: Question[];
+}
+
+export default function AnkiQuesList(props: Props) {
   return (
     <React.Fragment>
       <Container maxWidth="md">
         <ul>
           {props.questions.map((question) => (
-            <ul key={question.id}>
+            <ul key={question.questionId}>
               <p style={{ whiteSpace: 'pre-line' }}>
                 {question.questionText.replaceAll('\\n', '\n')}
               </p>

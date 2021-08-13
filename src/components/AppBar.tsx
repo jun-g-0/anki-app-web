@@ -32,7 +32,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AnkiAppBar(props) {
+type Props = {
+  open: boolean;
+  handleDrawerOpen: () => void;
+}
+
+export default function AnkiAppBar(props: Props) {
   const classes = useStyles();
 
   return (

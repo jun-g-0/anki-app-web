@@ -13,11 +13,11 @@ import AnkiResult from './Result';
 
 // import Typography from '@material-ui/core/Typography';
 
-import { SettingContext } from '../App';
+import { SettingContext, Question } from '../App';
 
 export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 
-const useStyles = makeStyles((_) => ({
+const useStyles = makeStyles(() => ({
   home: {
     display: 'flex',
     alignItems: 'center',
@@ -32,24 +32,28 @@ const useStyles = makeStyles((_) => ({
   },
   afterAnswer: {
     color: 'green',
-    fontWeight: '800',
   },
 }));
 
-export default function AnkiTraning(props) {
+type Props = {
+  questions: Question[];
+  setView: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function AnkiTraning(props: Props) {
   const classes = useStyles();
   // controll result
   const [showResult, setShowResult] = useState(false);
-  const [sessionSelected, setSessionSelected] = useState({});
+  const [sessionSelected, setSessionSelected] = useState<{[key: number]: string}>({});
 
   // controll select
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [history, setHistory] = useState({});
+  const [history, setHistory] = useState<{[key: number]: string}>({});
 
   let settings = React.useContext(SettingContext);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (settings.tapMode === 'tapMode') {
       handleAnsweredTrue();
     }
@@ -94,7 +98,7 @@ export default function AnkiTraning(props) {
 
   const saveHistory = () => {
     const oldHistory = localStorage.getItem(HISTORY_KEY);
-    let hisObj = {};
+    let hisObj: {[key: number]: string} = {};
     if (oldHistory) {
       hisObj = JSON.parse(oldHistory);
     }
@@ -113,13 +117,13 @@ export default function AnkiTraning(props) {
     <React.Fragment>
       {showResult && (
         <AnkiResult
-          setShowResult={setShowResult}
           questions={props.questions}
+          setView={props.setView}
+          setShowResult={setShowResult}
           sessionSelected={sessionSelected}
           setSessionSelected={setSessionSelected}
           history={history}
           setQuesNum={setQuesNum}
-          setView={props.setView}
         />
       )}
       {!showResult && (
@@ -150,7 +154,7 @@ export default function AnkiTraning(props) {
                       value={String(e.choiceId)}
                       control={<Radio />}
                       label={e.choiceText}
-                      className={answered ? classes.afterAnswer : null}
+                      className={answered ? classes.afterAnswer : undefined}
                     />
                   ))
                 }

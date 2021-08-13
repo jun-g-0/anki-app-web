@@ -41,13 +41,14 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-export default function AnkiQuesList(props) {
+
+export default function AnkiQuesList() {
   const classes = useStyles();
   const setting = useContext(SettingContext);
   const [tapMode, SetTapMode] = useState(setting.tapMode);
 
-  const changeTapMode = (e) => {
-    setting.change('tapMode', e.target.value);
+  const changeTapMode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // setting.change('tapMode', e.target.value);
     SetTapMode(e.target.value);
     saveSetting();
   };

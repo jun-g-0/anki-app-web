@@ -27,9 +27,13 @@ const loginUiConfig = {
   ],
 };
 
-export default function AnkiHome(props) {
+type Props = {
+  setView: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function AnkiHome(props: Props) {
   const classes = useStyles();
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<firebase.User | null>();
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {

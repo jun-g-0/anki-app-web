@@ -9,6 +9,7 @@ import {
   Radio,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import AnkiTraning from './Traning';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -36,7 +37,19 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-export default function AnkiResult(props) {
+type AnkiTraningProps = React.ComponentProps<typeof AnkiTraning>;
+
+type Props = {
+  setShowResult: React.Dispatch<React.SetStateAction<boolean>>;
+  sessionSelected: {
+    [key: number]: string;
+  };
+  setSessionSelected: React.Dispatch<React.SetStateAction<{[key: number]: string;}>>;
+  history: {[key: number]: string};
+  setQuesNum: React.Dispatch<React.SetStateAction<number>>;
+} & AnkiTraningProps
+
+export default function AnkiResult(props: Props) {
   const classes = useStyles();
 
   const handleReturn = () => {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
@@ -14,15 +15,5 @@ describe('Unit / App.js > defaultSetting', () => {
   console.log('defaultSetting: ' + defaultSetting);
   test('have tapMode', () => {
     expect(typeof defaultSetting.tapMode).toBe('string');
-  });
-
-  test('have change function', () => {
-    expect(typeof defaultSetting.change).toBe('function');
-  });
-
-  test('can change boolean', () => {
-    let beforeChange = defaultSetting.tapMode;
-    defaultSetting.change('tapMode', !beforeChange);
-    expect(defaultSetting.tapMode).toBe(!beforeChange);
   });
 });

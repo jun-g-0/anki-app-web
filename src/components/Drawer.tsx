@@ -47,11 +47,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AnkiDrawer(props) {
+type Props = {
+  handleDrawerClose: () => void;
+  open: boolean;
+  setView: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function AnkiDrawer(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<firebase.User | null>();
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
