@@ -42,6 +42,8 @@ export default function AnkiResult(props) {
   const handleReturn = () => {
     props.setShowResult(false);
     props.setSessionSelected({});
+    props.setQuesNum(0);
+    props.setView('home');
   };
 
   return (
@@ -58,6 +60,11 @@ export default function AnkiResult(props) {
                   question.answer
                     ? '正解'
                     : '不正解'}
+                </Typography>
+                <Typography style={{ padding: '0px 0px 0px 20px' }}>
+                  {`回答履歴: ${props.history[question.questionId]
+                    .replaceAll('t', '◯')
+                    .replaceAll('f', '×')}`}
                 </Typography>
               </Container>
 

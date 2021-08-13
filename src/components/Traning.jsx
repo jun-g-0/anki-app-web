@@ -15,7 +15,7 @@ import AnkiResult from './Result';
 
 import { SettingContext } from '../App.js';
 
-const HISTORY_KEY = 'ANKI_WEB_HISTORY';
+export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -45,6 +45,8 @@ export default function AnkiTraning(props) {
   // controll select
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
+  const [history, setHistory] = useState({});
+
   let settings = React.useContext(SettingContext);
 
   const handleChange = (e) => {
@@ -86,11 +88,25 @@ export default function AnkiTraning(props) {
   const handleResult = () => {
     handleAnsweredFalse();
     console.log(sessionSelected);
+    saveHistory();
     setShowResult(true);
   };
 
   const saveHistory = () => {
-    const oldHistory = localStorage.getItem('');
+    const oldHistory = localStorage.getItem(HISTORY_KEY);
+    let hisObj = {};
+    if (oldHistory) {
+      hisObj = JSON.parse(oldHistory);
+    }
+    for (let i = 0; i < props.questions.length; i++) {
+      const q = props.questions[i];
+      let tf = +sessionSelected[q.questionId] === q.answer ? 't' : 'f';
+      hisObj[q.questionId] = (tf + (hisObj[q.questionId] || '')).substr(0, 5);
+    }
+    const jsonHis = JSON.stringify(hisObj);
+    console.log(jsonHis);
+    localStorage.setItem(HISTORY_KEY, jsonHis);
+    setHistory(hisObj);
   };
 
   return (
@@ -101,6 +117,9 @@ export default function AnkiTraning(props) {
           questions={props.questions}
           sessionSelected={sessionSelected}
           setSessionSelected={setSessionSelected}
+          history={history}
+          setQuesNum={setQuesNum}
+          setView={props.setView}
         />
       )}
       {!showResult && (
