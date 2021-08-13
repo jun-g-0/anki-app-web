@@ -12,6 +12,8 @@ import {
 
 import { SettingContext } from '../App.js';
 
+export const SETTING_LOCAL_KEY = 'ANKI_WEB_TEST_SETTING';
+
 const useStyles = makeStyles((_) => ({
   home: {
     display: 'flex',
@@ -41,12 +43,18 @@ const useStyles = makeStyles((_) => ({
 
 export default function AnkiQuesList(props) {
   const classes = useStyles();
-  const answerSetting = useContext(SettingContext);
-  const [tapMode, SetTapMode] = useState(answerSetting.tapMode);
+  const setting = useContext(SettingContext);
+  const [tapMode, SetTapMode] = useState(setting.tapMode);
 
   const changeTapMode = (e) => {
-    answerSetting.change('tapMode', e.target.value);
+    setting.change('tapMode', e.target.value);
     SetTapMode(e.target.value);
+    saveSetting();
+  };
+
+  const saveSetting = () => {
+    const jsonText = JSON.stringify(setting);
+    localStorage.setItem(SETTING_LOCAL_KEY, jsonText);
   };
 
   return (

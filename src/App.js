@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,7 +9,7 @@ import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
 import AnkiTraning from './components/Traning';
-import AnkiSetting from './components/Setting';
+import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
 
 // for firebase
 import firebase, { db } from './Firebase.js';
@@ -28,7 +28,6 @@ export const defaultSetting = {
   backColor: 'gray',
   textColor: 'black',
   textSize: '10px',
-  history: {},
 };
 
 export const SettingContext = React.createContext(defaultSetting);
@@ -37,6 +36,7 @@ export const SettingContext = React.createContext(defaultSetting);
 export default function App() {
   const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
+  const setting = useContext(SettingContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -49,10 +49,6 @@ export default function App() {
   // controll data
   const [questions, setQuestions] = useState([]);
 
-  useEffect(() => {
-    fetchQuestions();
-  }, []);
-
   async function fetchQuestions() {
     // get all qa-data
     const snapshot = await db.collection('demo-qa').get();
@@ -64,6 +60,19 @@ export default function App() {
     setQuestions(tmp);
     console.log(tmp);
   }
+
+  function getLocalSetting() {
+    const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
+    const parsedText = JSON.parse(jsonText);
+    for (const k of Object.keys(parsedText)) {
+      setting.change(k, parsedText[k]);
+    }
+  }
+
+  useEffect(() => {
+    fetchQuestions();
+    getLocalSetting();
+  }, []);
 
   return (
     <React.Fragment>
