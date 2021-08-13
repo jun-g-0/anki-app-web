@@ -16,9 +16,6 @@ import firebase, { db } from './Firebase.js';
 
 // Setting context
 export const defaultSetting = {
-  toggle: function (key) {
-    this[key] = !this[key];
-  },
   change: function (key, val) {
     this[key] = val;
   },

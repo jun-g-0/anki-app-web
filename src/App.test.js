@@ -16,16 +16,6 @@ describe('Unit / App.js > defaultSetting', () => {
     expect(typeof defaultSetting.tapMode).toBe('string');
   });
 
-  test('have toggle function', () => {
-    expect(typeof defaultSetting.toggle).toBe('function');
-  });
-
-  test('can toggle boolean', () => {
-    let beforeToggle = defaultSetting.tapMode;
-    defaultSetting.toggle('tapMode');
-    expect(defaultSetting.tapMode).toBe(!beforeToggle);
-  });
-
   test('have change function', () => {
     expect(typeof defaultSetting.change).toBe('function');
   });
