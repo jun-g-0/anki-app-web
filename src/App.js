@@ -49,7 +49,7 @@ export default function App() {
   // controll data
   const [questions, setQuestions] = useState([]);
 
-  async function fetchQuestions() {
+  const fetchQuestions = async () => {
     // get all qa-data
     const snapshot = await db.collection('demo-qa').get();
     let tmp = [];
@@ -59,15 +59,15 @@ export default function App() {
     tmp.sort((a, b) => +a.questionId - +b.questionId);
     setQuestions(tmp);
     console.log(tmp);
-  }
+  };
 
-  function getLocalSetting() {
+  const getLocalSetting = () => {
     const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
     const parsedText = JSON.parse(jsonText);
     for (const k of Object.keys(parsedText)) {
       setting.change(k, parsedText[k]);
     }
-  }
+  };
 
   useEffect(() => {
     fetchQuestions();
