@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, Fragment } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,18 +14,33 @@ import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
 // for firebase
 import firebase, { db } from './Firebase.js';
 
+type Setting = {
+  tapMode: string;
+}
+
 // Setting context
 export const defaultSetting = {
-  change: function (key, val) {
-    this[key] = val;
-  },
   tapMode: 'tapMode',
 };
 
 export const SettingContext = React.createContext(defaultSetting);
 
+type Choice = {
+  choiceId: number;
+  choiceText: string;
+};
+
+type Question = {
+  questionId: number;
+  questionText: string;
+  type: string;
+  choices: Choice[];
+  answer: number | number[] | string;
+  desc: string;
+};
+
 // React
-export default function App() {
+function App() {
   const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
   const setting = useContext(SettingContext);
@@ -39,14 +54,14 @@ export default function App() {
   };
 
   // controll data
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   const fetchQuestions = async () => {
     // get all qa-data
     const snapshot = await db.collection('demo-qa').get();
-    let tmp = [];
+    let tmp: Question[] = [];
     snapshot.forEach((doc) => {
-      tmp.push(doc.data());
+      tmp.push(doc.data() as Question);
     });
     tmp.sort((a, b) => +a.questionId - +b.questionId);
     setQuestions(tmp);
@@ -58,7 +73,7 @@ export default function App() {
     if (jsonText) {
       const parsedText = JSON.parse(jsonText);
       for (const k of Object.keys(parsedText)) {
-        setting.change(k, parsedText[k]);
+        // setting.change(k, parsedText[k]);
       }
     }
   };
@@ -88,3 +103,5 @@ export default function App() {
     </React.Fragment>
   );
 }
+
+export default App;

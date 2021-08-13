@@ -13,7 +13,7 @@ import AnkiResult from './Result';
 
 // import Typography from '@material-ui/core/Typography';
 
-import { SettingContext } from '../App.js';
+import { SettingContext } from '../App';
 
 export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 

@@ -10,7 +10,7 @@ import {
   FormControl,
 } from '@material-ui/core';
 
-import { SettingContext } from '../App.js';
+import { SettingContext } from '../App';
 
 export const SETTING_LOCAL_KEY = 'ANKI_WEB_TEST_SETTING';
 
