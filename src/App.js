@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -23,11 +23,6 @@ export const defaultSetting = {
     this[key] = val;
   },
   tapMode: 'tapMode',
-  colorTheme: 'purple',
-  headColor: 'purple',
-  backColor: 'gray',
-  textColor: 'black',
-  textSize: '10px',
 };
 
 export const SettingContext = React.createContext(defaultSetting);
