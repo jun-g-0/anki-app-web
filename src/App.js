@@ -63,9 +63,11 @@ export default function App() {
 
   const getLocalSetting = () => {
     const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
-    const parsedText = JSON.parse(jsonText);
-    for (const k of Object.keys(parsedText)) {
-      setting.change(k, parsedText[k]);
+    if (jsonText) {
+      const parsedText = JSON.parse(jsonText);
+      for (const k of Object.keys(parsedText)) {
+        setting.change(k, parsedText[k]);
+      }
     }
   };
 

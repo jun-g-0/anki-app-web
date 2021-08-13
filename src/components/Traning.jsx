@@ -15,6 +15,8 @@ import AnkiResult from './Result';
 
 import { SettingContext } from '../App.js';
 
+const HISTORY_KEY = 'ANKI_WEB_HISTORY';
+
 const useStyles = makeStyles((_) => ({
   home: {
     display: 'flex',
@@ -85,6 +87,10 @@ export default function AnkiTraning(props) {
     handleAnsweredFalse();
     console.log(sessionSelected);
     setShowResult(true);
+  };
+
+  const saveHistory = () => {
+    const oldHistory = localStorage.getItem('');
   };
 
   return (
