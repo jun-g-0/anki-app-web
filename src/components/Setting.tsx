@@ -10,7 +10,14 @@ import {
   FormControl,
 } from '@material-ui/core';
 
-import { SettingContext } from '../App';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import settingsReducer, {
+  SettingsState,
+  setTapMode,
+  setButtonMode,
+  selectSettings,
+  selectSettingsTapMode,
+} from '../features/settings/settingsSlice';
 
 export const SETTING_LOCAL_KEY = 'ANKI_WEB_TEST_SETTING';
 
@@ -28,7 +35,7 @@ const useStyles = makeStyles((_) => ({
     flexDirection: 'column',
     padding: '20px',
   },
-  settingChoices: {
+  settingsChoices: {
     display: 'flex',
     flexDirection: 'column',
     padding: '0px 20px 20px 20px',
@@ -41,21 +48,22 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-
 export default function AnkiQuesList() {
   const classes = useStyles();
-  const setting = useContext(SettingContext);
-  const [tapMode, SetTapMode] = useState(setting.tapMode);
+  const tapMode = useAppSelector(selectSettingsTapMode);
+  const dispatch = useAppDispatch();
 
   const changeTapMode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setting.change('tapMode', e.target.value);
-    SetTapMode(e.target.value);
-    saveSetting();
-  };
-
-  const saveSetting = () => {
-    const jsonText = JSON.stringify(setting);
-    localStorage.setItem(SETTING_LOCAL_KEY, jsonText);
+    switch (e.target.value as SettingsState['tapMode']) {
+      case 'tapMode':
+        dispatch(setTapMode());
+        break;
+      case 'buttonMode':
+        dispatch(setButtonMode());
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -70,7 +78,7 @@ export default function AnkiQuesList() {
               aria-label='tapModeRadio'
               name='tapModeRadio'
               onChange={changeTapMode}
-              className={classes.settingChoices}
+              className={classes.settingsChoices}
               value={tapMode}
             >
               <FormControlLabel

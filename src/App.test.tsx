@@ -1,19 +1,16 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
-
-import { defaultSetting } from './App';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 
 test('renders learn react link', () => {
-  render(<App />);
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
   // const linkElement = screen.getByText(/資格取得補助システム/i);
   // expect(linkElement).toBeInTheDocument();
   // expect(1).to.be.equal(1);
-});
-
-describe('Unit / App.js > defaultSetting', () => {
-  console.log('defaultSetting: ' + defaultSetting);
-  test('have tapMode', () => {
-    expect(typeof defaultSetting.tapMode).toBe('string');
-  });
 });

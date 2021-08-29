@@ -13,7 +13,16 @@ import AnkiResult from './Result';
 
 // import Typography from '@material-ui/core/Typography';
 
-import { SettingContext, Question } from '../App';
+import { Question } from '../App';
+
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import settingsReducer, {
+  SettingsState,
+  setTapMode,
+  setButtonMode,
+  selectSettings,
+  selectSettingsTapMode,
+} from '../features/settings/settingsSlice';
 
 export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 
@@ -37,21 +46,24 @@ const useStyles = makeStyles(() => ({
 
 type Props = {
   questions: Question[];
-  setView: React.Dispatch<React.SetStateAction<string>>
-}
+  setView: React.Dispatch<React.SetStateAction<string>>;
+};
 
 export default function AnkiTraning(props: Props) {
   const classes = useStyles();
+
   // controll result
   const [showResult, setShowResult] = useState(false);
-  const [sessionSelected, setSessionSelected] = useState<{[key: number]: string}>({});
+  const [sessionSelected, setSessionSelected] = useState<{
+    [key: number]: string;
+  }>({});
 
   // controll select
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [history, setHistory] = useState<{[key: number]: string}>({});
+  const [history, setHistory] = useState<{ [key: number]: string }>({});
 
-  let settings = React.useContext(SettingContext);
+  const settings = useAppSelector(selectSettings);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (settings.tapMode === 'tapMode') {
@@ -98,7 +110,7 @@ export default function AnkiTraning(props: Props) {
 
   const saveHistory = () => {
     const oldHistory = localStorage.getItem(HISTORY_KEY);
-    let hisObj: {[key: number]: string} = {};
+    let hisObj: { [key: number]: string } = {};
     if (oldHistory) {
       hisObj = JSON.parse(oldHistory);
     }

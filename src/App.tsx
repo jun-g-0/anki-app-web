@@ -14,17 +14,6 @@ import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
 // for firebase
 import firebase, { db } from './Firebase';
 
-type Setting = {
-  tapMode: string;
-}
-
-// Setting context
-export const defaultSetting = {
-  tapMode: 'tapMode',
-};
-
-export const SettingContext = React.createContext(defaultSetting);
-
 type Choice = {
   choiceId: number;
   choiceText: string;
@@ -43,7 +32,6 @@ export type Question = {
 function App() {
   const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
-  const setting = useContext(SettingContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -68,19 +56,19 @@ function App() {
     console.log(tmp);
   };
 
-  const getLocalSetting = () => {
-    const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
-    if (jsonText) {
-      const parsedText = JSON.parse(jsonText);
-      for (const k of Object.keys(parsedText)) {
-        // setting.change(k, parsedText[k]);
-      }
-    }
-  };
+  // const getLocalSetting = () => {
+  //   const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
+  //   if (jsonText) {
+  //     const parsedText = JSON.parse(jsonText);
+  //     for (const k of Object.keys(parsedText)) {
+  //       // setting.change(k, parsedText[k]);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     fetchQuestions();
-    getLocalSetting();
+    // getLocalSetting();
   }, []);
 
   return (
