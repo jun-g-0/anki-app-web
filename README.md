@@ -1,3 +1,4 @@
 # anki-app-web
 
 ブラウザで使える、カスタマイズ性が高い暗記アプリ
+Firebase / React(Redux) / TypeScript
