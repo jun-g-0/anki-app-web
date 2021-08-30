@@ -28,8 +28,8 @@ const loginUiConfig = {
 };
 
 type Props = {
-  setView: React.Dispatch<React.SetStateAction<string>>
-}
+  setView: React.Dispatch<React.SetStateAction<string>>;
+};
 
 export default function AnkiHome(props: Props) {
   const classes = useStyles();
@@ -42,19 +42,19 @@ export default function AnkiHome(props: Props) {
   }, []);
 
   return (
-    <React.Fragment>
-      <Container maxWidth="xl" className={classes.home}>
+    <>
+      <Container maxWidth='xl' className={classes.home}>
         <Typography
-          component="h2"
-          variant="h4"
-          color="textPrimary"
+          component='h2'
+          variant='h4'
+          color='textPrimary'
           gutterBottom
         >
           資格取得補助システム
         </Typography>
         <Button
-          variant="contained"
-          color="primary"
+          variant='contained'
+          color='primary'
           onClick={() => {
             props.setView('traning');
           }}
@@ -72,6 +72,6 @@ export default function AnkiHome(props: Props) {
           )}
         </div>
       </Container>
-    </React.Fragment>
+    </>
   );
 }

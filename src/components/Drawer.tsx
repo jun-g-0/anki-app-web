@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
 type Props = {
   handleDrawerClose: () => void;
   open: boolean;
-  setView: React.Dispatch<React.SetStateAction<string>>
-}
+  setView: React.Dispatch<React.SetStateAction<string>>;
+};
 
 export default function AnkiDrawer(props: Props) {
   const classes = useStyles();
@@ -66,11 +66,11 @@ export default function AnkiDrawer(props: Props) {
   }, []);
 
   return (
-    <React.Fragment>
+    <>
       <Drawer
         className={classes.drawer}
-        variant="persistent"
-        anchor="left"
+        variant='persistent'
+        anchor='left'
         open={props.open}
         classes={{
           paper: classes.drawerPaper,
@@ -90,7 +90,7 @@ export default function AnkiDrawer(props: Props) {
         <List>
           <ListItem
             button
-            key="home"
+            key='home'
             onClick={() => {
               props.setView('home');
               props.handleDrawerClose();
@@ -99,11 +99,11 @@ export default function AnkiDrawer(props: Props) {
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="ホーム" />
+            <ListItemText primary='ホーム' />
           </ListItem>
           <ListItem
             button
-            key="traning"
+            key='traning'
             onClick={() => {
               props.setView('traning');
               props.handleDrawerClose();
@@ -112,11 +112,11 @@ export default function AnkiDrawer(props: Props) {
             <ListItemIcon>
               <PlayCircleFilledWhiteIcon />
             </ListItemIcon>
-            <ListItemText primary="演習" />
+            <ListItemText primary='演習' />
           </ListItem>
           <ListItem
             button
-            key="queslist"
+            key='queslist'
             onClick={() => {
               props.setView('queslist');
               props.handleDrawerClose();
@@ -125,11 +125,11 @@ export default function AnkiDrawer(props: Props) {
             <ListItemIcon>
               <ListIcon />
             </ListItemIcon>
-            <ListItemText primary="質問一覧" />
+            <ListItemText primary='質問一覧' />
           </ListItem>
           <ListItem
             button
-            key="setting"
+            key='setting'
             onClick={() => {
               props.setView('setting');
               props.handleDrawerClose();
@@ -138,11 +138,11 @@ export default function AnkiDrawer(props: Props) {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="設定変更" />
+            <ListItemText primary='設定変更' />
           </ListItem>
           <ListItem
             button
-            key="logout"
+            key='logout'
             onClick={() => {
               firebaseLogout();
               props.setView('home');
@@ -152,13 +152,13 @@ export default function AnkiDrawer(props: Props) {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="ログアウト" />
+            <ListItemText primary='ログアウト' />
           </ListItem>
           <ListItem>
             <ListItemText primary={user && `ユーザ: ${user.displayName}さん`} />
           </ListItem>
         </List>
       </Drawer>
-    </React.Fragment>
+    </>
   );
 }

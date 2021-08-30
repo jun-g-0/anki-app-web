@@ -67,7 +67,7 @@ export default function AnkiQuesList() {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Container maxWidth='md' className={classes.home}>
         <Typography variant='h4'>設定</Typography>
         <Box className={classes.settings}>
@@ -104,6 +104,6 @@ export default function AnkiQuesList() {
           </Box>
         </Box>
       </Container>
-    </React.Fragment>
+    </>
   );
 }
