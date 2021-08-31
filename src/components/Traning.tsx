@@ -24,6 +24,15 @@ import settingsReducer, {
   selectSettingsTapMode,
 } from '../features/settings/settingsSlice';
 
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useHistory,
+} from 'react-router-dom';
+
 export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 
 const useStyles = makeStyles(() => ({
@@ -46,22 +55,22 @@ const useStyles = makeStyles(() => ({
 
 type Props = {
   questions: Question[];
-  setView: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function AnkiTraning(props: Props) {
   const classes = useStyles();
+  let { path, url } = useRouteMatch();
+  let history = useHistory();
 
-  // controll result
-  const [showResult, setShowResult] = useState(false);
+  // control result
   const [sessionSelected, setSessionSelected] = useState<{
     [key: number]: string;
   }>({});
 
-  // controll select
+  // control select
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [history, setHistory] = useState<{ [key: number]: string }>({});
+  const [answerLogs, setAnswerLogs] = useState<{ [key: number]: string }>({});
 
   const settings = useAppSelector(selectSettings);
 
@@ -76,7 +85,7 @@ export default function AnkiTraning(props: Props) {
     setSessionSelected(tmp);
   };
 
-  // controll answer
+  // control answer
   const [answered, setAnswered] = useState(false);
 
   const handleAnsweredTrue = () => {
@@ -88,7 +97,7 @@ export default function AnkiTraning(props: Props) {
     setSelectedValue('');
   };
 
-  // controll move
+  // control move
   const handleMoveNext = () => {
     handleAnsweredFalse();
     console.log(props.questions[quesNum + 1]);
@@ -105,7 +114,7 @@ export default function AnkiTraning(props: Props) {
     handleAnsweredFalse();
     console.log(sessionSelected);
     saveHistory();
-    setShowResult(true);
+    history.push(`${url}/result`);
   };
 
   const saveHistory = () => {
@@ -122,118 +131,119 @@ export default function AnkiTraning(props: Props) {
     const jsonHis = JSON.stringify(hisObj);
     console.log(jsonHis);
     localStorage.setItem(HISTORY_KEY, jsonHis);
-    setHistory(hisObj);
+    setAnswerLogs(hisObj);
   };
 
   return (
     <>
-      {showResult && (
-        <AnkiResult
-          questions={props.questions}
-          setView={props.setView}
-          setShowResult={setShowResult}
-          sessionSelected={sessionSelected}
-          setSessionSelected={setSessionSelected}
-          history={history}
-          setQuesNum={setQuesNum}
-        />
-      )}
-      {!showResult && (
-        <Container>
-          {
-            // 問題表示欄
-          }
-          <Container maxWidth='md' className={classes.home}>
-            <Box>ID: {props.questions[quesNum].questionId}</Box>
-            <p style={{ whiteSpace: 'pre-line' }}>
-              {props.questions[quesNum].questionText.replaceAll('\\n', '\n')}
-            </p>
-          </Container>
+      <Switch>
+        <Route exact path={path}>
+          <Container>
+            {
+              // 問題表示欄
+            }
+            <Container maxWidth='md' className={classes.home}>
+              <Box>ID: {props.questions[quesNum].questionId}</Box>
+              <p style={{ whiteSpace: 'pre-line' }}>
+                {props.questions[quesNum].questionText.replaceAll('\\n', '\n')}
+              </p>
+            </Container>
 
-          <Container maxWidth='md' className={classes.home}>
-            <FormControl component='fieldset'>
-              <RadioGroup
-                aria-label='choicesRadio'
-                name='choicesRadio'
-                value={selectedValue} // 選択肢はselectedValueと連動
-                onChange={handleChange}
-              >
-                {
-                  // 選択肢を一つずつ生成
-                  props.questions[quesNum].choices.map((e) => (
-                    <FormControlLabel
-                      key={e.choiceId}
-                      value={String(e.choiceId)}
-                      control={<Radio />}
-                      label={e.choiceText}
-                      className={answered ? classes.afterAnswer : undefined}
-                    />
-                  ))
-                }
-              </RadioGroup>
-            </FormControl>
-          </Container>
+            <Container maxWidth='md' className={classes.home}>
+              <FormControl component='fieldset'>
+                <RadioGroup
+                  aria-label='choicesRadio'
+                  name='choicesRadio'
+                  value={selectedValue} // 選択肢はselectedValueと連動
+                  onChange={handleChange}
+                >
+                  {
+                    // 選択肢を一つずつ生成
+                    props.questions[quesNum].choices.map((e) => (
+                      <FormControlLabel
+                        key={e.choiceId}
+                        value={String(e.choiceId)}
+                        control={<Radio />}
+                        label={e.choiceText}
+                        className={answered ? classes.afterAnswer : undefined}
+                      />
+                    ))
+                  }
+                </RadioGroup>
+              </FormControl>
+            </Container>
 
-          {
-            // 正答表示/解説表示欄
-          }
-          <Container maxWidth='md' className={classes.home}>
-            {settings.tapMode === 'buttonMode' && (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleAnsweredTrue}
-              >
-                正答
-              </Button>
-            )}
-            {answered && +selectedValue === +props.questions[quesNum].answer ? (
-              <p>正解です!🎉</p>
-            ) : answered ? (
-              <p>不正解です。</p>
-            ) : null}
-            {answered && (
-              <div style={{ whiteSpace: 'pre-line' }}>
-                <p>解説</p>
-                <p>{props.questions[quesNum].desc.replaceAll('\\n', '\n')}</p>
-              </div>
-            )}
-          </Container>
+            {
+              // 正答表示/解説表示欄
+            }
+            <Container maxWidth='md' className={classes.home}>
+              {settings.tapMode === 'buttonMode' && (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleAnsweredTrue}
+                >
+                  正答
+                </Button>
+              )}
+              {answered &&
+              +selectedValue === +props.questions[quesNum].answer ? (
+                <p>正解です!🎉</p>
+              ) : answered ? (
+                <p>不正解です。</p>
+              ) : null}
+              {answered && (
+                <div style={{ whiteSpace: 'pre-line' }}>
+                  <p>解説</p>
+                  <p>{props.questions[quesNum].desc.replaceAll('\\n', '\n')}</p>
+                </div>
+              )}
+            </Container>
 
-          {
-            // ナビゲーション欄
-          }
-          <Container maxWidth='md' className={classes.nav}>
-            {quesNum !== 0 && (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleMovePrev}
-              >
-                前の問題
-              </Button>
-            )}
-            {quesNum !== props.questions.length - 1 && (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleMoveNext}
-              >
-                次の問題
-              </Button>
-            )}
-            {quesNum === props.questions.length - 1 && (
-              <Button
-                variant='contained'
-                color='secondary'
-                onClick={handleResult}
-              >
-                回答終了
-              </Button>
-            )}
+            {
+              // ナビゲーション欄
+            }
+            <Container maxWidth='md' className={classes.nav}>
+              {quesNum !== 0 && (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleMovePrev}
+                >
+                  前の問題
+                </Button>
+              )}
+              {quesNum !== props.questions.length - 1 && (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleMoveNext}
+                >
+                  次の問題
+                </Button>
+              )}
+              {quesNum === props.questions.length - 1 && (
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  onClick={handleResult}
+                >
+                  回答終了
+                </Button>
+              )}
+            </Container>
           </Container>
-        </Container>
-      )}
+        </Route>
+        <Route path={`${url}/result`}>
+          <AnkiResult
+            questions={props.questions}
+            sessionSelected={sessionSelected}
+            setSessionSelected={setSessionSelected}
+            answerLogs={answerLogs}
+            setQuesNum={setQuesNum}
+          />
+        </Route>
+      </Switch>
     </>
   );
 }

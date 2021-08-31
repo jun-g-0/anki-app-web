@@ -7,6 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+
 const useStyles = makeStyles(() => ({
   home: {
     display: 'flex',
@@ -27,11 +29,7 @@ const loginUiConfig = {
   ],
 };
 
-type Props = {
-  setView: React.Dispatch<React.SetStateAction<string>>;
-};
-
-export default function AnkiHome(props: Props) {
+export default function AnkiHome() {
   const classes = useStyles();
   const [user, setUser] = useState<firebase.User | null>();
 
@@ -52,15 +50,11 @@ export default function AnkiHome(props: Props) {
         >
           資格取得補助システム
         </Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={() => {
-            props.setView('traning');
-          }}
-        >
-          演習開始
-        </Button>
+        <Link to='/traning'>
+          <Button variant='contained' color='primary'>
+            演習開始
+          </Button>
+        </Link>
         <div style={{ whiteSpace: 'pre-line' }}>
           {user ? (
             `\n${user.displayName}さん、こんにちは！`
