@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,23 +15,10 @@ import AnkiResult from './Result';
 
 import { Question } from '../App';
 
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import settingsReducer, {
-  SettingsState,
-  setTapMode,
-  setButtonMode,
-  selectSettings,
-  selectSettingsTapMode,
-} from '../features/settings/settingsSlice';
+import { useAppSelector } from '../app/hooks';
+import { selectSettings } from '../features/settings/settingsSlice';
 
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useHistory,
-} from 'react-router-dom';
+import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 
 export const HISTORY_KEY = 'ANKI_WEB_HISTORY';
 

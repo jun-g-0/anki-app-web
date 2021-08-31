@@ -1,6 +1,5 @@
-import React from 'react';
 import Button from '@material-ui/core/Button';
-import { Container, Typography, Box } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import { Question } from '../App';
 
 type Props = {

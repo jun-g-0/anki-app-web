@@ -3,21 +3,13 @@ import Button from '@material-ui/core/Button';
 import {
   Container,
   Typography,
-  Box,
   RadioGroup,
   FormControlLabel,
   Radio,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AnkiTraning from './Traning';
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useHistory,
-} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((_) => ({
   home: {

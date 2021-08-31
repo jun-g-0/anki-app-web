@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Container,
@@ -7,15 +7,13 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  FormControl,
 } from '@material-ui/core';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import settingsReducer, {
+import  {
   SettingsState,
   setTapMode,
   setButtonMode,
-  selectSettings,
   selectSettingsTapMode,
 } from '../features/settings/settingsSlice';
 

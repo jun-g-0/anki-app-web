@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,12 +9,12 @@ import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
 import AnkiTraning from './components/Traning';
-import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
+import AnkiSetting from './components/Setting';
 
 // for firebase
-import firebase, { db } from './Firebase';
+import { db } from './Firebase';
 
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 type Choice = {
   choiceId: number;
@@ -32,7 +32,6 @@ export type Question = {
 
 // React
 function App() {
-  const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {

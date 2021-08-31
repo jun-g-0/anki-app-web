@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   home: {
