@@ -8,7 +8,7 @@ import AnkiDrawer from './components/Drawer';
 import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
-import AnkiTraning from './components/Traning';
+import AnkiTraining from './components/Training';
 import AnkiSetting from './components/Setting';
 
 // for firebase
@@ -76,8 +76,8 @@ function App() {
           <Route exact path='/'>
             <AnkiHome />
           </Route>
-          <Route path='/traning'>
-            <AnkiTraning questions={questions} />
+          <Route path='/training'>
+            <AnkiTraining questions={questions} />
           </Route>
           <Route path='/queslist'>
             <AnkiQuesList questions={questions} />

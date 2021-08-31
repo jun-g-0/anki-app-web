@@ -44,7 +44,7 @@ type Props = {
   questions: Question[];
 };
 
-export default function AnkiTraning(props: Props) {
+export default function AnkiTraining(props: Props) {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
   let history = useHistory();

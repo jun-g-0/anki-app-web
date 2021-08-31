@@ -69,7 +69,7 @@ export default function AnkiDrawer(props: Props) {
   }
 
   function handleClickTraining() {
-    history.push('/traning');
+    history.push('/training');
   }
 
   function handleClickQuesList() {
@@ -125,7 +125,7 @@ export default function AnkiDrawer(props: Props) {
 
           <ListItem
             button
-            key='traning'
+            key='training'
             onClick={() => {
               props.handleDrawerClose();
               handleClickTraining();

@@ -50,7 +50,7 @@ export default function AnkiHome() {
         >
           資格取得補助システム
         </Typography>
-        <Link to='/traning'>
+        <Link to='/training'>
           <Button variant='contained' color='primary'>
             演習開始
           </Button>
