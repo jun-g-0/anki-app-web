@@ -8,19 +8,22 @@ interface AnkiUser {
   email: string | null;
 }
 
-export interface UserState extends AnkiUser {
+export interface UserState {
   isSignedIn: 'pending' | 'signedIn' | 'NotSignedIn';
+  ankiUser: AnkiUser;
 }
 
 export const initialState: UserState = {
   isSignedIn: 'pending',
-  uid: null,
-  displayName: null,
-  email: null,
+  ankiUser: {
+    uid: null,
+    displayName: null,
+    email: null,
+  },
 };
 
 // userを返すPromiseを自作する
-function authPromise() {
+function authPromise(): Promise<firebase.User> {
   return new Promise((resolve, reject) => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -37,7 +40,7 @@ function authPromise() {
 // 自作したuserを返すPromiseを呼び出し、返却されたPromise(Async/Await)をcreateAsyncThunkで書く
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   console.log('fetchUser fire.');
-  const response = (await authPromise()) as firebase.User;
+  const response = await authPromise();
   console.log('response: ', response);
   const persedUser: AnkiUser = {
     uid: response.uid,
@@ -75,9 +78,9 @@ export const userSlice = createSlice({
         console.log('fetchUser fulfilled case called.');
         console.log('action: ', action);
         state.isSignedIn = 'signedIn';
-        state.uid = action.payload.uid;
-        state.displayName = action.payload.displayName;
-        state.email = action.payload.email;
+        state.ankiUser.uid = action.payload.uid;
+        state.ankiUser.displayName = action.payload.displayName;
+        state.ankiUser.email = action.payload.email;
       })
       .addCase(fetchUser.rejected, (state) => {
         console.log('fetchUser rejected case called.');
@@ -90,9 +93,9 @@ export const userSlice = createSlice({
       .addCase(signOutThunk.fulfilled, (state) => {
         console.log('signOutThunk fulfilled case called.');
         state.isSignedIn = 'NotSignedIn';
-        state.uid = null;
-        state.displayName = null;
-        state.email = null;
+        state.ankiUser.uid = null;
+        state.ankiUser.displayName = null;
+        state.ankiUser.email = null;
       });
   },
 });

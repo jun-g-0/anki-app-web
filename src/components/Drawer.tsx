@@ -176,7 +176,9 @@ export default function AnkiDrawer(props: Props) {
 
           {user.isSignedIn === 'signedIn' && (
             <ListItem>
-              <ListItemText primary={`ユーザ: ${user.displayName}さん`} />
+              <ListItemText
+                primary={`ユーザ: ${user.ankiUser.displayName}さん`}
+              />
             </ListItem>
           )}
         </List>
