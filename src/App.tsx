@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,11 +8,13 @@ import AnkiDrawer from './components/Drawer';
 import AnkiAppBar from './components/AppBar';
 import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
-import AnkiTraning from './components/Traning';
-import AnkiSetting, { SETTING_LOCAL_KEY } from './components/Setting';
+import AnkiTraining from './components/Training';
+import AnkiSetting from './components/Setting';
 
 // for firebase
-import firebase, { db } from './Firebase';
+import { db } from './Firebase';
+
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 type Choice = {
   choiceId: number;
@@ -30,7 +32,6 @@ export type Question = {
 
 // React
 function App() {
-  const [view, setView] = React.useState('home');
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -41,7 +42,7 @@ function App() {
     setOpen(false);
   };
 
-  // controll data
+  // control data
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const fetchQuestions = async () => {
@@ -56,38 +57,36 @@ function App() {
     console.log(tmp);
   };
 
-  // const getLocalSetting = () => {
-  //   const jsonText = localStorage.getItem(SETTING_LOCAL_KEY);
-  //   if (jsonText) {
-  //     const parsedText = JSON.parse(jsonText);
-  //     for (const k of Object.keys(parsedText)) {
-  //       // setting.change(k, parsedText[k]);
-  //     }
-  //   }
-  // };
-
   useEffect(() => {
     fetchQuestions();
-    // getLocalSetting();
   }, []);
 
   return (
     <>
-      <CssBaseline />
-      <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
+      <BrowserRouter>
+        <CssBaseline />
+        <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
 
-      <AnkiDrawer
-        handleDrawerClose={handleDrawerClose}
-        open={open}
-        setView={setView}
-      ></AnkiDrawer>
+        <AnkiDrawer
+          handleDrawerClose={handleDrawerClose}
+          open={open}
+        ></AnkiDrawer>
 
-      {view === 'home' && <AnkiHome setView={setView} />}
-      {view === 'traning' && (
-        <AnkiTraning questions={questions} setView={setView} />
-      )}
-      {view === 'queslist' && <AnkiQuesList questions={questions} />}
-      {view === 'setting' && <AnkiSetting />}
+        <Switch>
+          <Route exact path='/'>
+            <AnkiHome />
+          </Route>
+          <Route path='/training'>
+            <AnkiTraining questions={questions} />
+          </Route>
+          <Route path='/queslist'>
+            <AnkiQuesList questions={questions} />
+          </Route>
+          <Route path='/setting'>
+            <AnkiSetting />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </>
   );
 }

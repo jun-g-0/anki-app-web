@@ -3,13 +3,13 @@ import Button from '@material-ui/core/Button';
 import {
   Container,
   Typography,
-  Box,
   RadioGroup,
   FormControlLabel,
   Radio,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AnkiTraning from './Traning';
+import AnkiTraining from './Training';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -37,28 +37,27 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-type AnkiTraningProps = React.ComponentProps<typeof AnkiTraning>;
+type AnkiTrainingProps = React.ComponentProps<typeof AnkiTraining>;
 
 type Props = {
-  setShowResult: React.Dispatch<React.SetStateAction<boolean>>;
   sessionSelected: {
     [key: number]: string;
   };
   setSessionSelected: React.Dispatch<
     React.SetStateAction<{ [key: number]: string }>
   >;
-  history: { [key: number]: string };
+  answerLogs: { [key: number]: string };
   setQuesNum: React.Dispatch<React.SetStateAction<number>>;
-} & AnkiTraningProps;
+} & AnkiTrainingProps;
 
 export default function AnkiResult(props: Props) {
   const classes = useStyles();
+  let history = useHistory();
 
   const handleReturn = () => {
-    props.setShowResult(false);
     props.setSessionSelected({});
     props.setQuesNum(0);
-    props.setView('home');
+    history.push('/');
   };
 
   return (
@@ -77,7 +76,7 @@ export default function AnkiResult(props: Props) {
                     : '不正解'}
                 </Typography>
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
-                  {`回答履歴: ${props.history[question.questionId]
+                  {`回答履歴: ${props.answerLogs[question.questionId]
                     .replaceAll('t', '◯')
                     .replaceAll('f', '×')}`}
                 </Typography>
@@ -113,7 +112,7 @@ export default function AnkiResult(props: Props) {
                     ))}
                   </RadioGroup>
                 </Container>
-                {/* {解説}}} */}
+                {/* {解説} */}
                 <Container
                   style={{
                     whiteSpace: 'pre-line',
