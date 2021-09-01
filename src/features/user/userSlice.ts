@@ -12,7 +12,7 @@ export interface UserState extends AnkiUser {
   isSignedIn: 'pending' | 'signedIn' | 'NotSignedIn';
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   isSignedIn: 'pending',
   uid: null,
   displayName: null,
@@ -48,7 +48,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   return persedUser;
 });
 
-export const signOutThunk = createAsyncThunk('user/signOut', async () => {
+export const signOutThunk = createAsyncThunk('user/signOutThunk', async () => {
   await auth.signOut();
 });
 
@@ -90,6 +90,9 @@ export const userSlice = createSlice({
       .addCase(signOutThunk.fulfilled, (state) => {
         console.log('signOutThunk fulfilled case called.');
         state.isSignedIn = 'NotSignedIn';
+        state.uid = null;
+        state.displayName = null;
+        state.email = null;
       });
   },
 });
