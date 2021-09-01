@@ -72,7 +72,7 @@ function App() {
   }, []);
 
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
       <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
 
@@ -88,7 +88,7 @@ function App() {
       )}
       {view === 'queslist' && <AnkiQuesList questions={questions} />}
       {view === 'setting' && <AnkiSetting />}
-    </React.Fragment>
+    </>
   );
 }
 

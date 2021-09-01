@@ -126,7 +126,7 @@ export default function AnkiTraning(props: Props) {
   };
 
   return (
-    <React.Fragment>
+    <>
       {showResult && (
         <AnkiResult
           questions={props.questions}
@@ -234,6 +234,6 @@ export default function AnkiTraning(props: Props) {
           </Container>
         </Container>
       )}
-    </React.Fragment>
+    </>
   );
 }

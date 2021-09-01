@@ -44,10 +44,12 @@ type Props = {
   sessionSelected: {
     [key: number]: string;
   };
-  setSessionSelected: React.Dispatch<React.SetStateAction<{[key: number]: string;}>>;
-  history: {[key: number]: string};
+  setSessionSelected: React.Dispatch<
+    React.SetStateAction<{ [key: number]: string }>
+  >;
+  history: { [key: number]: string };
   setQuesNum: React.Dispatch<React.SetStateAction<number>>;
-} & AnkiTraningProps
+} & AnkiTraningProps;
 
 export default function AnkiResult(props: Props) {
   const classes = useStyles();
@@ -60,7 +62,7 @@ export default function AnkiResult(props: Props) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Container maxWidth='md' className={classes.home}>
         <Container>
           {props.questions.map((question) => (
@@ -128,6 +130,6 @@ export default function AnkiResult(props: Props) {
           閲覧終了
         </Button>
       </Container>
-    </React.Fragment>
+    </>
   );
 }

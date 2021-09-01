@@ -35,25 +35,25 @@ const useStyles = makeStyles((theme) => ({
 type Props = {
   open: boolean;
   handleDrawerOpen: () => void;
-}
+};
 
 export default function AnkiAppBar(props: Props) {
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <>
       <AppBar
-        position="fixed"
+        position='fixed'
         className={clsx(classes.appBar, {
           [classes.appBarShift]: props.open,
         })}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
+            color='inherit'
+            aria-label='open drawer'
             onClick={props.handleDrawerOpen}
-            edge="start"
+            edge='start'
             className={clsx(classes.menuButton, props.open && classes.hide)}
           >
             <MenuIcon />
@@ -61,6 +61,6 @@ export default function AnkiAppBar(props: Props) {
         </Toolbar>
       </AppBar>
       <Toolbar />
-    </React.Fragment>
+    </>
   );
 }
