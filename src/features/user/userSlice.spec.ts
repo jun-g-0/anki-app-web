@@ -1,4 +1,4 @@
-import userReducer, { UserState, initialState } from './userSlice';
+import userReducer, { initialState } from './userSlice';
 
 describe('user reducer', () => {
   it('should handle initial state', () => {
