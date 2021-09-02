@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,7 +57,11 @@ export default function AnkiTraining() {
   const [quesNum, setQuesNum] = useState(0);
   const [answerLogs, setAnswerLogs] = useState<{ [key: number]: string }>({});
 
+  // settings
   const settings = useAppSelector(selectSettings);
+
+  // question see now
+  const question = useMemo(() => questions[quesNum], [questions, quesNum]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (settings.tapMode === 'tapMode') {
@@ -66,7 +70,7 @@ export default function AnkiTraining() {
     setSelectedValue(e.target.value);
 
     const tmp = sessionSelected;
-    tmp[questions[quesNum].questionId] = e.target.value;
+    tmp[question.questionId] = e.target.value;
     setSessionSelected(tmp);
   };
 
@@ -128,9 +132,9 @@ export default function AnkiTraining() {
               // 問題表示欄
             }
             <Container maxWidth='md' className={classes.home}>
-              <Box>ID: {questions[quesNum].questionId}</Box>
+              <Box>ID: {question.questionId}</Box>
               <p style={{ whiteSpace: 'pre-line' }}>
-                {questions[quesNum].questionText.replaceAll('\\n', '\n')}
+                {question.questionText.replaceAll('\\n', '\n')}
               </p>
             </Container>
 
@@ -144,7 +148,7 @@ export default function AnkiTraining() {
                 >
                   {
                     // 選択肢を一つずつ生成
-                    questions[quesNum].choices.map((e) => (
+                    question.choices.map((e) => (
                       <FormControlLabel
                         key={e.choiceId}
                         value={String(e.choiceId)}
@@ -171,7 +175,7 @@ export default function AnkiTraining() {
                   正答
                 </Button>
               )}
-              {answered && +selectedValue === +questions[quesNum].answer ? (
+              {answered && +selectedValue === +question.answer ? (
                 <p>正解です!🎉</p>
               ) : answered ? (
                 <p>不正解です。</p>
@@ -179,7 +183,7 @@ export default function AnkiTraining() {
               {answered && (
                 <div style={{ whiteSpace: 'pre-line' }}>
                   <p>解説</p>
-                  <p>{questions[quesNum].desc.replaceAll('\\n', '\n')}</p>
+                  <p>{question.desc.replaceAll('\\n', '\n')}</p>
                 </div>
               )}
             </Container>
