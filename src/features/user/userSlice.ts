@@ -3,23 +3,19 @@ import { RootState } from '../../app/store';
 import firebase, { auth } from '../../Firebase';
 
 interface AnkiUser {
-  uid: string | null;
-  displayName: string | null;
-  email: string | null;
+  uid: string;
+  displayName: string;
+  email: string;
 }
 
 export interface UserState {
   isSignedIn: 'pending' | 'signedIn' | 'NotSignedIn';
-  ankiUser: AnkiUser;
+  ankiUser: AnkiUser | null;
 }
 
 export const initialState: UserState = {
   isSignedIn: 'pending',
-  ankiUser: {
-    uid: null,
-    displayName: null,
-    email: null,
-  },
+  ankiUser: null,
 };
 
 // userを返すPromiseを自作する
@@ -44,8 +40,9 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   console.log('response: ', response);
   const persedUser: AnkiUser = {
     uid: response.uid,
-    email: response.email,
-    displayName: response.displayName,
+    email: typeof response.email === 'string' ? response.email : '',
+    displayName:
+      typeof response.displayName === 'string' ? response.displayName : '',
   };
   console.log('persedUser: ', persedUser);
   return persedUser;
@@ -78,9 +75,17 @@ export const userSlice = createSlice({
         console.log('fetchUser fulfilled case called.');
         console.log('action: ', action);
         state.isSignedIn = 'signedIn';
-        state.ankiUser.uid = action.payload.uid;
-        state.ankiUser.displayName = action.payload.displayName;
-        state.ankiUser.email = action.payload.email;
+        state.ankiUser = {
+          uid: action.payload.uid,
+          email:
+            typeof action.payload.email === 'string'
+              ? action.payload.email
+              : '',
+          displayName:
+            typeof action.payload.displayName === 'string'
+              ? action.payload.displayName
+              : '',
+        };
       })
       .addCase(fetchUser.rejected, (state) => {
         console.log('fetchUser rejected case called.');
@@ -93,9 +98,7 @@ export const userSlice = createSlice({
       .addCase(signOutThunk.fulfilled, (state) => {
         console.log('signOutThunk fulfilled case called.');
         state.isSignedIn = 'NotSignedIn';
-        state.ankiUser.uid = null;
-        state.ankiUser.displayName = null;
-        state.ankiUser.email = null;
+        state.ankiUser = null;
       });
   },
 });

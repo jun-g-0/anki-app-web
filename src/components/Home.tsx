@@ -80,7 +80,7 @@ export default function AnkiHome() {
         </Link>
         <div style={{ whiteSpace: 'pre-line' }}>
           {user.isSignedIn === 'signedIn' ? (
-            `\n${user.ankiUser.displayName}さん、こんにちは！`
+            `\n${user.ankiUser && user.ankiUser.displayName}さん、こんにちは！`
           ) : user.isSignedIn === 'NotSignedIn' ? (
             <StyledFirebaseAuth uiConfig={loginUiConfig} firebaseAuth={auth} />
           ) : null}
