@@ -55,7 +55,7 @@ export default function AnkiTraining() {
   // selected choices
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [answerLogs, setAnswerLogs] = useState<{ [key: number]: string }>({});
+  const [answerLogs, setAnswerLog] = useState<{ [key: number]: string }>({});
 
   // settings
   const settings = useAppSelector(selectSettings);
@@ -120,7 +120,7 @@ export default function AnkiTraining() {
     const jsonHis = JSON.stringify(hisObj);
     console.log(jsonHis);
     localStorage.setItem(HISTORY_KEY, jsonHis);
-    setAnswerLogs(hisObj);
+    setAnswerLog(hisObj);
   };
 
   return (

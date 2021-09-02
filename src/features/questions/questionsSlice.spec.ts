@@ -1,6 +1,6 @@
 import questionsReducer, { initialState } from './questionsSlice';
 
-const sampleQuestions = [
+export const sampleQuestions = [
   {
     questionId: 1,
     questionText: `質問1の問題文です。`,

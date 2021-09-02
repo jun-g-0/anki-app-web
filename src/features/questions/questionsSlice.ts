@@ -10,7 +10,7 @@ interface Choice {
 export interface Question {
   questionId: number;
   questionText: string;
-  type: string;
+  type: 'radio' | 'checkbox' | 'input';
   choices: Choice[];
   answer: number | number[] | string;
   desc: string;
