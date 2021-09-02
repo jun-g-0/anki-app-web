@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -56,9 +56,6 @@ export default function AnkiTraining() {
 
   // session
   const session = useAppSelector(selectSession);
-
-  // selected choices
-  const [selectedValue, setSelectedValue] = useState('');
   const quesNum = useAppSelector(selectSessionQuesNum);
 
   // settings
@@ -71,7 +68,6 @@ export default function AnkiTraining() {
     if (settings.tapMode === 'tapMode') {
       handleAnsweredTrue();
     }
-    setSelectedValue(e.target.value);
 
     dispatch(answerSelected({ key: question.questionId, val: e.target.value }));
   };
@@ -86,14 +82,6 @@ export default function AnkiTraining() {
   const handleAnsweredFalse = (nextNum: number) => {
     setAnswered(false);
     dispatch(questionMoved(nextNum));
-
-    const newQ = questions[nextNum];
-
-    if (session.selectedAnswers[newQ.questionId]) {
-      setSelectedValue(String(session.selectedAnswers[newQ.questionId]));
-    } else {
-      setSelectedValue('');
-    }
   };
 
   // control move
@@ -122,16 +110,6 @@ export default function AnkiTraining() {
     history.push(`${url}/result`);
   };
 
-  useEffect(() => {
-    const newQ = questions[quesNum];
-
-    if (session.selectedAnswers[newQ.questionId]) {
-      setSelectedValue(String(session.selectedAnswers[newQ.questionId]));
-    } else {
-      setSelectedValue('');
-    }
-  }, [session.selectedAnswers]);
-
   return (
     <>
       <Switch>
@@ -152,7 +130,7 @@ export default function AnkiTraining() {
                 <RadioGroup
                   aria-label='choicesRadio'
                   name='choicesRadio'
-                  value={selectedValue} // 選択肢はselectedValueと連動
+                  value={String(session.selectedAnswers[question.questionId])}
                   onChange={handleChange}
                 >
                   {
@@ -184,7 +162,9 @@ export default function AnkiTraining() {
                   正答
                 </Button>
               )}
-              {answered && +selectedValue === +question.answer ? (
+              {answered &&
+              String(session.selectedAnswers[question.questionId]) ===
+                String(question.answer) ? (
                 <p>正解です!🎉</p>
               ) : answered ? (
                 <p>不正解です。</p>

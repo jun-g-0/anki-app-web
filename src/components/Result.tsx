@@ -65,7 +65,7 @@ export default function AnkiResult() {
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
                   {Number(lastSession.selectedAnswers[question.questionId]) ===
                   Number(question.answer)
-                    ? '正解 ' + lastSession.selectedAnswers[question.questionId]
+                    ? '正解 '
                     : '不正解'}
                 </Typography>
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
