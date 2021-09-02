@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase, { auth } from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, fetchUser } from '../features/user/userSlice';

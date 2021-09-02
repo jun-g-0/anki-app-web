@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from '../app/hooks';
 import { selectQuestions } from '../features/questions/questionsSlice';
 import { selectAnswerLog } from '../features/answerLog/answerLogSlice';
+import { selectLastSession } from '../features/session/sessionSlice';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -40,25 +41,15 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-type Props = {
-  sessionSelected: {
-    [key: number]: number | number[] | string;
-  };
-  setSessionSelected: React.Dispatch<
-    React.SetStateAction<{ [key: number]: number | number[] | string }>
-  >;
-};
-
-export default function AnkiResult(props: Props) {
+export default function AnkiResult() {
   const classes = useStyles();
   let history = useHistory();
 
   const questions = useAppSelector(selectQuestions);
+  const lastSession = useAppSelector(selectLastSession);
   const answerLog = useAppSelector(selectAnswerLog);
 
   const handleReturn = () => {
-    props.setSessionSelected({});
-    // props.setQuesNum(0);
     history.push('/');
   };
 
@@ -72,9 +63,9 @@ export default function AnkiResult(props: Props) {
               <Container className={classes.questionIdAndResult}>
                 <Typography>{`問題ID: ${question.questionId}`}</Typography>
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
-                  {+props.sessionSelected[question.questionId] ===
-                  question.answer
-                    ? '正解'
+                  {Number(lastSession.selectedAnswers[question.questionId]) ===
+                  Number(question.answer)
+                    ? '正解 ' + lastSession.selectedAnswers[question.questionId]
                     : '不正解'}
                 </Typography>
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
@@ -96,12 +87,14 @@ export default function AnkiResult(props: Props) {
                 >
                   {question.questionText.replaceAll('\\n', '\n')}
                 </Container>
+
                 {/* {選択肢} */}
                 <Container style={{ padding: '0px 0px 20px 40px' }}>
                   <RadioGroup
-                    aria-label='choicesRadio'
                     name='choicesRadio'
-                    value={props.sessionSelected[question.questionId]} // 選択肢はselectedValueと連動
+                    value={String(
+                      lastSession.selectedAnswers[question.questionId]
+                    )} // 選択肢はselectedValueと連動
                   >
                     {question.choices.map((e) => (
                       <FormControlLabel
@@ -116,6 +109,7 @@ export default function AnkiResult(props: Props) {
                     ))}
                   </RadioGroup>
                 </Container>
+
                 {/* {解説} */}
                 <Container
                   style={{

@@ -56,9 +56,6 @@ export default function AnkiTraining() {
 
   // session
   const session = useAppSelector(selectSession);
-  const [sessionSelected, setSessionSelected] = useState<{
-    [key: number]: number | number[] | string;
-  }>({});
 
   // selected choices
   const [selectedValue, setSelectedValue] = useState('');
@@ -75,10 +72,6 @@ export default function AnkiTraining() {
       handleAnsweredTrue();
     }
     setSelectedValue(e.target.value);
-
-    const tmp = sessionSelected;
-    tmp[question.questionId] = e.target.value;
-    setSessionSelected(tmp);
 
     dispatch(answerSelected({ key: question.questionId, val: e.target.value }));
   };
@@ -114,13 +107,12 @@ export default function AnkiTraining() {
 
   const handleResult = () => {
     handleAnsweredFalse(0);
-    console.log(sessionSelected);
 
     dispatch(
       logUpdate({
         questions,
         session: {
-          answer: sessionSelected,
+          answer: session.selectedAnswers,
         },
       })
     );
@@ -138,7 +130,7 @@ export default function AnkiTraining() {
     } else {
       setSelectedValue('');
     }
-  });
+  }, [session.selectedAnswers]);
 
   return (
     <>
@@ -240,10 +232,7 @@ export default function AnkiTraining() {
           </Container>
         </Route>
         <Route path={`${url}/result`}>
-          <AnkiResult
-            sessionSelected={sessionSelected}
-            setSessionSelected={setSessionSelected}
-          />
+          <AnkiResult />
         </Route>
       </Switch>
     </>
