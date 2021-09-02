@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useAppSelector } from '../app/hooks';
 import { selectQuestions } from '../features/questions/questionsSlice';
+import { selectAnswerLog } from '../features/answerLog/answerLogSlice';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -46,7 +47,6 @@ type Props = {
   setSessionSelected: React.Dispatch<
     React.SetStateAction<{ [key: number]: number | number[] | string }>
   >;
-  answerLogs: { [key: number]: string };
   setQuesNum: React.Dispatch<React.SetStateAction<number>>;
 };
 
@@ -55,6 +55,7 @@ export default function AnkiResult(props: Props) {
   let history = useHistory();
 
   const questions = useAppSelector(selectQuestions);
+  const answerLog = useAppSelector(selectAnswerLog);
 
   const handleReturn = () => {
     props.setSessionSelected({});
@@ -78,9 +79,11 @@ export default function AnkiResult(props: Props) {
                     : '不正解'}
                 </Typography>
                 <Typography style={{ padding: '0px 0px 0px 20px' }}>
-                  {`回答履歴: ${props.answerLogs[question.questionId]
-                    .replaceAll('t', '◯')
-                    .replaceAll('f', '×')}`}
+                  {`回答履歴: ${answerLog[question.questionId]
+                    .toString()
+                    .replaceAll('true', '◯')
+                    .replaceAll('false', '×')
+                    .replaceAll(',', '')}`}
                 </Typography>
               </Container>
 

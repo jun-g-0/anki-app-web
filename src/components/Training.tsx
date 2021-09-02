@@ -55,9 +55,6 @@ export default function AnkiTraining() {
   // selected choices
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [answerLogs, setAnswerLog] = useState<{
-    [key: number]: string;
-  }>({});
 
   // settings
   const settings = useAppSelector(selectSettings);
@@ -114,26 +111,7 @@ export default function AnkiTraining() {
       })
     );
 
-    saveHistory();
-
     history.push(`${url}/result`);
-  };
-
-  const saveHistory = () => {
-    const oldHistory = localStorage.getItem(HISTORY_KEY);
-    let hisObj: { [key: number]: string } = {};
-    if (oldHistory) {
-      hisObj = JSON.parse(oldHistory);
-    }
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      let tf = +sessionSelected[q.questionId] === q.answer ? 't' : 'f';
-      hisObj[q.questionId] = (tf + (hisObj[q.questionId] || '')).substr(0, 5);
-    }
-    const jsonHis = JSON.stringify(hisObj);
-    console.log(jsonHis);
-    localStorage.setItem(HISTORY_KEY, jsonHis);
-    setAnswerLog(hisObj);
   };
 
   return (
@@ -239,7 +217,6 @@ export default function AnkiTraining() {
           <AnkiResult
             sessionSelected={sessionSelected}
             setSessionSelected={setSessionSelected}
-            answerLogs={answerLogs}
             setQuesNum={setQuesNum}
           />
         </Route>
