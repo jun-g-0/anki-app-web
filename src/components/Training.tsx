@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,13 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectSettings } from '../features/settings/settingsSlice';
 import { selectQuestions } from '../features/questions/questionsSlice';
 import { logUpdate } from '../features/answerLog/answerLogSlice';
+import {
+  sessionInit,
+  answerSelected,
+  selectSession,
+  questionMoved,
+  selectSessionQuesNum,
+} from '../features/session/sessionSlice';
 
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 
@@ -47,14 +54,15 @@ export default function AnkiTraining() {
   // questions
   const questions = useAppSelector(selectQuestions);
 
-  // result
+  // session
+  const session = useAppSelector(selectSession);
   const [sessionSelected, setSessionSelected] = useState<{
     [key: number]: number | number[] | string;
   }>({});
 
   // selected choices
   const [selectedValue, setSelectedValue] = useState('');
-  const [quesNum, setQuesNum] = useState(0);
+  const quesNum = useAppSelector(selectSessionQuesNum);
 
   // settings
   const settings = useAppSelector(selectSettings);
@@ -71,6 +79,8 @@ export default function AnkiTraining() {
     const tmp = sessionSelected;
     tmp[question.questionId] = e.target.value;
     setSessionSelected(tmp);
+
+    dispatch(answerSelected({ key: question.questionId, val: e.target.value }));
   };
 
   // control answer
@@ -80,26 +90,30 @@ export default function AnkiTraining() {
     setAnswered(true);
   };
 
-  const handleAnsweredFalse = () => {
+  const handleAnsweredFalse = (nextNum: number) => {
     setAnswered(false);
-    setSelectedValue('');
+    dispatch(questionMoved(nextNum));
+
+    const newQ = questions[nextNum];
+
+    if (session.selectedAnswers[newQ.questionId]) {
+      setSelectedValue(String(session.selectedAnswers[newQ.questionId]));
+    } else {
+      setSelectedValue('');
+    }
   };
 
   // control move
   const handleMoveNext = () => {
-    handleAnsweredFalse();
-    console.log(questions[quesNum + 1]);
-    setQuesNum(quesNum + 1);
+    handleAnsweredFalse(quesNum + 1);
   };
 
   const handleMovePrev = () => {
-    handleAnsweredFalse();
-    console.log(questions[quesNum - 1]);
-    setQuesNum(quesNum - 1);
+    handleAnsweredFalse(quesNum - 1);
   };
 
   const handleResult = () => {
-    handleAnsweredFalse();
+    handleAnsweredFalse(0);
     console.log(sessionSelected);
 
     dispatch(
@@ -111,8 +125,20 @@ export default function AnkiTraining() {
       })
     );
 
+    dispatch(sessionInit());
+
     history.push(`${url}/result`);
   };
+
+  useEffect(() => {
+    const newQ = questions[quesNum];
+
+    if (session.selectedAnswers[newQ.questionId]) {
+      setSelectedValue(String(session.selectedAnswers[newQ.questionId]));
+    } else {
+      setSelectedValue('');
+    }
+  });
 
   return (
     <>
@@ -217,7 +243,6 @@ export default function AnkiTraining() {
           <AnkiResult
             sessionSelected={sessionSelected}
             setSessionSelected={setSessionSelected}
-            setQuesNum={setQuesNum}
           />
         </Route>
       </Switch>

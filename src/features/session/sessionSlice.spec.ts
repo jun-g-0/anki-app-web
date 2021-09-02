@@ -46,7 +46,10 @@ describe('settings reducer', () => {
   });
 
   it('should handle answerSelected', () => {
-    const actual = sessionReducer(initialState, answerSelected({ 1: 1 }));
+    const actual = sessionReducer(
+      initialState,
+      answerSelected({ key: 1, val: 1 })
+    );
     expect(actual.selectedAnswers[1]).toEqual(1);
   });
 });

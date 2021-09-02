@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase, { auth } from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectUser, fetchUser } from '../features/user/userSlice';
@@ -33,9 +33,14 @@ const loginUiConfig = {
 
 export default function AnkiHome() {
   const classes = useStyles();
+  const history = useHistory();
 
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+
+  function handleStart() {
+    history.push('/training');
+  }
 
   useEffect(() => {
     console.log('dispatch(fetchUser()): ', dispatch(fetchUser()));
@@ -73,11 +78,9 @@ export default function AnkiHome() {
         >
           資格取得補助システム
         </Typography>
-        <Link to='/training'>
-          <Button variant='contained' color='primary'>
-            演習開始
-          </Button>
-        </Link>
+        <Button variant='contained' color='primary' onClick={handleStart}>
+          演習開始
+        </Button>
         <div style={{ whiteSpace: 'pre-line' }}>
           {user.isSignedIn === 'signedIn' ? (
             `\n${user.displayName}さん、こんにちは！`

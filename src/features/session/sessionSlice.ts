@@ -39,21 +39,32 @@ export const sessionSlice = createSlice({
       state.selectedQuestions = action.payload.questions;
     },
     answerSelected: (state, action) => {
-      const newAnswer = action.payload;
-      state.selectedAnswers = {
-        ...state.selectedAnswers,
-        ...newAnswer,
-      };
+      state.selectedAnswers[action.payload.key] = action.payload.val;
+    },
+    questionMoved: (state, action) => {
+      state.currentQuestionNum = action.payload;
     },
   },
 });
 
-export const { sessionInit, selectedQuestionsUpdate, answerSelected } =
-  sessionSlice.actions;
+export const {
+  sessionInit,
+  selectedQuestionsUpdate,
+  answerSelected,
+  questionMoved,
+} = sessionSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.settings.value)`
 export const selectSession = (state: RootState) => state.session;
+export const selectSessionQuesNum = (state: RootState) =>
+  state.session.currentQuestionNum;
+export const selectSessionQuestions = (state: RootState) =>
+  state.session.selectedQuestions;
+export const selectSessionAnswers = (state: RootState) =>
+  state.session.selectedAnswers;
+export const selectLastSession = (state: RootState) =>
+  state.session.lastSession;
 
 export default sessionSlice.reducer;

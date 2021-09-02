@@ -47,7 +47,6 @@ type Props = {
   setSessionSelected: React.Dispatch<
     React.SetStateAction<{ [key: number]: number | number[] | string }>
   >;
-  setQuesNum: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function AnkiResult(props: Props) {
@@ -59,7 +58,7 @@ export default function AnkiResult(props: Props) {
 
   const handleReturn = () => {
     props.setSessionSelected({});
-    props.setQuesNum(0);
+    // props.setQuesNum(0);
     history.push('/');
   };
 
