@@ -7,12 +7,21 @@ export interface SessionState {
   selectedQuestions: Question[]; // いずれ、問題の絞り込みが必要になったとき用
   selectedAnswers: { [key: number]: number | number[] | string };
   currentQuestionNum: number;
+  lastSession: {
+    // 回答表示時用
+    selectedQuestions: Question[];
+    selectedAnswers: { [key: number]: number | number[] | string };
+  };
 }
 
 export const initialState: SessionState = {
   selectedQuestions: [],
   selectedAnswers: {},
   currentQuestionNum: 0,
+  lastSession: {
+    selectedQuestions: [],
+    selectedAnswers: {},
+  },
 };
 
 export const sessionSlice = createSlice({
@@ -20,7 +29,11 @@ export const sessionSlice = createSlice({
   initialState,
   reducers: {
     sessionInit: (state) => {
-      state = initialState;
+      state.lastSession.selectedQuestions = state.selectedQuestions;
+      state.lastSession.selectedAnswers = state.selectedAnswers;
+      state.selectedQuestions = [];
+      state.selectedAnswers = {};
+      state.currentQuestionNum = 0;
     },
     selectedQuestionsUpdate: (state, action) => {
       state.selectedQuestions = action.payload.questions;

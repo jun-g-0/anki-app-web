@@ -16,8 +16,25 @@ describe('settings reducer', () => {
   });
 
   it('should handle sessionInit', () => {
-    const actual = sessionReducer(initialState, sessionInit());
-    expect(actual).toEqual(initialState);
+    const testState: SessionState = {
+      selectedQuestions: sampleQuestions,
+      selectedAnswers: { 1: 1 },
+      currentQuestionNum: 0,
+      lastSession: {
+        selectedQuestions: [],
+        selectedAnswers: {},
+      },
+    };
+    const actual = sessionReducer(testState, sessionInit());
+    expect(actual.selectedQuestions.length).toEqual(0);
+    expect(Object.keys(actual.selectedAnswers).length).toEqual(0);
+    expect(actual.currentQuestionNum).toEqual(0);
+    console.log(
+      'actual.lastSession.selectedQuestions: ',
+      actual.lastSession.selectedQuestions
+    );
+    expect(actual.lastSession.selectedQuestions.length).toEqual(2);
+    expect(actual.lastSession.selectedAnswers[1]).toEqual(1);
   });
 
   it('should handle selectedQuestionsUpdate', () => {

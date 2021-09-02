@@ -1,9 +1,4 @@
-import answerLogReducer, {
-  AnswerLogState,
-  initialState,
-  logUpdate,
-  selectAnswerLog,
-} from './answerLogSlice';
+import answerLogReducer, { initialState, logUpdate } from './answerLogSlice';
 
 import { sampleQuestions } from '../questions/questionsSlice.spec';
 
