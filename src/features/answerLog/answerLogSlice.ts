@@ -15,11 +15,9 @@ export const answerLogSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     logUpdate: (state, action) => {
-      console.log('action.payload: ', action.payload);
       for (const key of Object.keys(action.payload.questions)) {
         const question: Question = action.payload.questions[key];
-        const selectedAnswer =
-          action.payload.session.answer[question.questionId];
+        const selectedAnswer = action.payload.answers[question.questionId];
 
         // check right or wrong
         let trueOrFalse = false;

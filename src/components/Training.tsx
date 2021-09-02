@@ -99,9 +99,7 @@ export default function AnkiTraining() {
     dispatch(
       logUpdate({
         questions,
-        session: {
-          answer: session.selectedAnswers,
-        },
+        answers: session.selectedAnswers,
       })
     );
 
