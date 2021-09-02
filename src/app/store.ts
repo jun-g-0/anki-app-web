@@ -3,6 +3,7 @@ import settingsReducer from '../features/settings/settingsSlice';
 import userReducer from '../features/user/userSlice';
 import questionsReducer from '../features/questions/questionsSlice';
 import answerLogReducer from '../features/answerLog/answerLogSlice';
+import sessionReducer from '../features/session/sessionSlice';
 
 import {
   persistStore,
@@ -30,6 +31,7 @@ const persistedAnswerLogReducer = persistReducer(
   persistConfig,
   answerLogReducer
 );
+const persistedSessionReducer = persistReducer(persistConfig, sessionReducer);
 
 export const store = configureStore({
   reducer: {
@@ -37,6 +39,7 @@ export const store = configureStore({
     user: userReducer,
     questions: persistedQuestionsReducer,
     answerLog: persistedAnswerLogReducer,
+    session: persistedSessionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
