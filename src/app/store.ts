@@ -22,13 +22,21 @@ const persistConfig = {
   storage,
 };
 const persistedSettingsReducer = persistReducer(persistConfig, settingsReducer);
+const persistedQuestionsReducer = persistReducer(
+  persistConfig,
+  questionsReducer
+);
+const persistedAnswerLogReducer = persistReducer(
+  persistConfig,
+  answerLogReducer
+);
 
 export const store = configureStore({
   reducer: {
     settings: persistedSettingsReducer,
     user: userReducer,
-    questions: questionsReducer,
-    answerLog: answerLogReducer,
+    questions: persistedQuestionsReducer,
+    answerLog: persistedAnswerLogReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
