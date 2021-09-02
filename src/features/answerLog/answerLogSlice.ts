@@ -15,6 +15,7 @@ export const answerLogSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     logUpdate: (state, action) => {
+      console.log('action.payload: ', action.payload);
       for (const key of Object.keys(action.payload.questions)) {
         const question: Question = action.payload.questions[key];
         const selectedAnswer =
@@ -22,7 +23,10 @@ export const answerLogSlice = createSlice({
 
         // check right or wrong
         let trueOrFalse = false;
-        if (question.type === 'radio' && question.answer === selectedAnswer) {
+        if (
+          question.type === 'radio' &&
+          Number(question.answer) === Number(selectedAnswer)
+        ) {
           trueOrFalse = true;
         }
 

@@ -11,11 +11,10 @@ import FormControl from '@material-ui/core/FormControl';
 
 import AnkiResult from './Result';
 
-// import Typography from '@material-ui/core/Typography';
-
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectSettings } from '../features/settings/settingsSlice';
 import { selectQuestions } from '../features/questions/questionsSlice';
+import { logUpdate } from '../features/answerLog/answerLogSlice';
 
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 
@@ -43,24 +42,27 @@ export default function AnkiTraining() {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
   let history = useHistory();
+  const dispatch = useAppDispatch();
 
   // questions
   const questions = useAppSelector(selectQuestions);
 
   // result
   const [sessionSelected, setSessionSelected] = useState<{
-    [key: number]: string;
+    [key: number]: number | number[] | string;
   }>({});
 
   // selected choices
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
-  const [answerLogs, setAnswerLog] = useState<{ [key: number]: string }>({});
+  const [answerLogs, setAnswerLog] = useState<{
+    [key: number]: string;
+  }>({});
 
   // settings
   const settings = useAppSelector(selectSettings);
 
-  // question see now
+  // question now
   const question = useMemo(() => questions[quesNum], [questions, quesNum]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +104,18 @@ export default function AnkiTraining() {
   const handleResult = () => {
     handleAnsweredFalse();
     console.log(sessionSelected);
+
+    dispatch(
+      logUpdate({
+        questions,
+        session: {
+          answer: sessionSelected,
+        },
+      })
+    );
+
     saveHistory();
+
     history.push(`${url}/result`);
   };
 

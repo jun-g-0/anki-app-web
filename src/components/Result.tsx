@@ -41,10 +41,10 @@ const useStyles = makeStyles((_) => ({
 
 type Props = {
   sessionSelected: {
-    [key: number]: string;
+    [key: number]: number | number[] | string;
   };
   setSessionSelected: React.Dispatch<
-    React.SetStateAction<{ [key: number]: string }>
+    React.SetStateAction<{ [key: number]: number | number[] | string }>
   >;
   answerLogs: { [key: number]: string };
   setQuesNum: React.Dispatch<React.SetStateAction<number>>;
