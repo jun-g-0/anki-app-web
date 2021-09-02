@@ -2,14 +2,7 @@ import userReducer, { initialState } from './userSlice';
 
 describe('user reducer', () => {
   it('should handle initial state', () => {
-    expect(userReducer(undefined, { type: 'unknown' })).toEqual({
-      isSignedIn: 'pending',
-      ankiUser: {
-        uid: null,
-        displayName: null,
-        email: null,
-      },
-    });
+    expect(userReducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
   it('should handle fetchUser/pending', () => {
@@ -17,9 +10,7 @@ describe('user reducer', () => {
       type: 'user/fetchUser/pending',
     });
     expect(actual.isSignedIn).toEqual('pending');
-    expect(actual.ankiUser.uid).toEqual(null);
-    expect(actual.ankiUser.displayName).toEqual(null);
-    expect(actual.ankiUser.email).toEqual(null);
+    expect(actual.ankiUser).toEqual(null);
   });
 
   it('should handle fetchUser/fulfilled', () => {
@@ -32,9 +23,13 @@ describe('user reducer', () => {
       },
     });
     expect(actual.isSignedIn).toEqual('signedIn');
-    expect(actual.ankiUser.uid).toEqual('dummyUid');
-    expect(actual.ankiUser.displayName).toEqual('dummyDisplayName');
-    expect(actual.ankiUser.email).toEqual('dummyEmail');
+    expect(Boolean(actual.ankiUser)).toEqual(true);
+
+    if (actual.ankiUser) {
+      expect(actual.ankiUser.uid).toEqual('dummyUid');
+      expect(actual.ankiUser.displayName).toEqual('dummyDisplayName');
+      expect(actual.ankiUser.email).toEqual('dummyEmail');
+    }
   });
 
   it('should handle fetchUser/rejected', () => {
@@ -42,9 +37,7 @@ describe('user reducer', () => {
       type: 'user/fetchUser/rejected',
     });
     expect(actual.isSignedIn).toEqual('NotSignedIn');
-    expect(actual.ankiUser.uid).toEqual(null);
-    expect(actual.ankiUser.displayName).toEqual(null);
-    expect(actual.ankiUser.email).toEqual(null);
+    expect(actual.ankiUser).toEqual(null);
   });
 
   it('should handle signOutThunk/fulfilled', () => {
@@ -52,8 +45,6 @@ describe('user reducer', () => {
       type: 'user/signOutThunk/fulfilled',
     });
     expect(actual.isSignedIn).toEqual('NotSignedIn');
-    expect(actual.ankiUser.uid).toEqual(null);
-    expect(actual.ankiUser.displayName).toEqual(null);
-    expect(actual.ankiUser.email).toEqual(null);
+    expect(actual.ankiUser).toEqual(null);
   });
 });
