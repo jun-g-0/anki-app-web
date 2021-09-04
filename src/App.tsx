@@ -57,7 +57,7 @@ function App() {
           <Route path='/queslist'>
             <AnkiQuesList />
           </Route>
-          <Route path='/setting'>
+          <Route path='/settings'>
             <AnkiSetting />
           </Route>
         </Switch>

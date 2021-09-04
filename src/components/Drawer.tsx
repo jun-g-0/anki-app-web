@@ -71,7 +71,7 @@ export default function AnkiDrawer(props: Props) {
   }
 
   function handleClickSetting() {
-    history.push('/setting');
+    history.push('/settings');
   }
 
   // useEffect(() => {
@@ -147,7 +147,7 @@ export default function AnkiDrawer(props: Props) {
 
           <ListItem
             button
-            key='setting'
+            key='settings'
             onClick={() => {
               props.handleDrawerClose();
               handleClickSetting();
