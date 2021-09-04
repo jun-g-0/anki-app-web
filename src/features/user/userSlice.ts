@@ -24,10 +24,8 @@ function authPromise() {
   return new Promise((resolve, reject) => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log('auth.onAuthStateChanged((user) > true');
         resolve(user);
       } else {
-        console.log('auth.onAuthStateChanged((user) > false');
         reject();
       }
     });
@@ -36,15 +34,12 @@ function authPromise() {
 
 // 自作したuserを返すPromiseを呼び出し、返却されたPromise(Async/Await)をcreateAsyncThunkで書く
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
-  console.log('fetchUser fire.');
   const response = (await authPromise()) as firebase.User;
-  console.log('response: ', response);
   const persedUser: AnkiUser = {
     uid: response.uid,
     email: response.email,
     displayName: response.displayName,
   };
-  console.log('persedUser: ', persedUser);
   return persedUser;
 });
 
@@ -72,23 +67,18 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.fulfilled, (state, action) => {
-        console.log('fetchUser fulfilled case called.');
-        console.log('action: ', action);
         state.isSignedIn = 'signedIn';
         state.uid = action.payload.uid;
         state.displayName = action.payload.displayName;
         state.email = action.payload.email;
       })
       .addCase(fetchUser.rejected, (state) => {
-        console.log('fetchUser rejected case called.');
         state.isSignedIn = 'NotSignedIn';
       })
       .addCase(fetchUser.pending, (state) => {
-        console.log('fetchUser pending case called.');
         state.isSignedIn = 'pending';
       })
       .addCase(signOutThunk.fulfilled, (state) => {
-        console.log('signOutThunk fulfilled case called.');
         state.isSignedIn = 'NotSignedIn';
         state.uid = null;
         state.displayName = null;

@@ -29,10 +29,6 @@ describe('settings reducer', () => {
     expect(actual.selectedQuestions.length).toEqual(0);
     expect(Object.keys(actual.selectedAnswers).length).toEqual(0);
     expect(actual.currentQuestionNum).toEqual(0);
-    console.log(
-      'actual.lastSession.selectedQuestions: ',
-      actual.lastSession.selectedQuestions
-    );
     expect(actual.lastSession.selectedQuestions.length).toEqual(2);
     expect(actual.lastSession.selectedAnswers[1]).toEqual(1);
   });
