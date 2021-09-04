@@ -13,14 +13,15 @@ import AnkiSetting from './components/Setting';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import {  useAppDispatch } from './app/hooks';
-import {
-  fetchQuestions,
-} from './features/questions/questionsSlice';
+import { useAppDispatch } from './app/hooks';
+import { fetchQuestions } from './features/questions/questionsSlice';
+import { fetchUser } from './features/user/userSlice';
 
 // React
 function App() {
   const [open, setOpen] = React.useState(false);
+
+  const dispatch = useAppDispatch();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -30,11 +31,9 @@ function App() {
     setOpen(false);
   };
 
-  // control questions
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
     dispatch(fetchQuestions());
+    dispatch(fetchUser());
   }, [dispatch]);
 
   return (

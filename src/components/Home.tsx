@@ -8,9 +8,8 @@ import firebase, { auth } from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { useHistory } from 'react-router-dom';
-
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectUser, fetchUser } from '../features/user/userSlice';
+import { useAppSelector } from '../app/hooks';
+import { selectUser } from '../features/user/userSlice';
 
 const useStyles = makeStyles(() => ({
   home: {
@@ -34,38 +33,11 @@ const loginUiConfig = {
 export default function AnkiHome() {
   const classes = useStyles();
   const history = useHistory();
-
   const user = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
 
   function handleStart() {
     history.push('/training');
   }
-
-  useEffect(() => {
-    console.log('dispatch(fetchUser()): ', dispatch(fetchUser()));
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   console.log('1');
-  //   auth.onAuthStateChanged((user) => {
-  //     console.log('2');
-  //     if (user) {
-  //       console.log('auth.onAuthStateChanged((user) > true');
-  //       dispatch(
-  //         userSignIn({
-  //           uid: user.uid,
-  //           displayName: user.displayName,
-  //           email: user.email,
-  //         })
-  //       );
-  //     } else {
-  //       console.log('auth.onAuthStateChanged((user) > false');
-  //       dispatch(userSignOut());
-  //     }
-  //   });
-  //   console.log('3');
-  // }, []);
 
   return (
     <>
