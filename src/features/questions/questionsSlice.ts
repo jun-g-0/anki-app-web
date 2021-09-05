@@ -48,12 +48,9 @@ export const questionsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchQuestions.pending, (state) => {
-        console.log('fetchQuestions pending case called.');
         state.isLoaded = 'pending';
       })
       .addCase(fetchQuestions.fulfilled, (state, action) => {
-        console.log('fetchQuestions fulfilled case called.');
-        console.log('action: ', action);
         state.isLoaded = 'loaded';
         state.questions = action.payload;
         state.updateDate = Date.now();

@@ -19,11 +19,7 @@ export default function AnkiQuesList() {
               <p style={{ whiteSpace: 'pre-line' }}>
                 {question.desc.replaceAll('\\n', '\n') || 'no desc'}
               </p>
-              <Button
-                variant='contained'
-                color='secondary'
-                onClick={(e) => console.log(e.target)}
-              >
+              <Button variant='contained' color='secondary'>
                 詳細
               </Button>
             </ul>
