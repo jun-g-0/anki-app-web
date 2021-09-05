@@ -31,6 +31,7 @@ export const initialState: QuestionsState = {
 export const fetchQuestions = createAsyncThunk(
   'questions/fetchQuestions',
   async () => {
+    console.log('questions/fetchQuestions fired.');
     const snapshot = await db.collection('demo-qa').get();
     let questions: Question[] = [];
     snapshot.forEach((doc) => {
@@ -65,5 +66,7 @@ export const questionsSlice = createSlice({
 // in the slice file. For example: `useSelector((state: RootState) => state.settings.value)`
 export const selectQuestionsState = (state: RootState) => state.questions;
 export const selectQuestions = (state: RootState) => state.questions.questions;
+export const selectQuestionsLastUpdate = (state: RootState) =>
+  state.questions.updateDate;
 
 export default questionsSlice.reducer;

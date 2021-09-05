@@ -13,8 +13,11 @@ import AnkiSetting from './components/Setting';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import { useAppDispatch } from './app/hooks';
-import { fetchQuestions } from './features/questions/questionsSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import {
+  fetchQuestions,
+  selectQuestionsLastUpdate,
+} from './features/questions/questionsSlice';
 import { fetchUser } from './features/user/userSlice';
 
 // React
@@ -22,6 +25,7 @@ function App() {
   const [open, setOpen] = React.useState(false);
 
   const dispatch = useAppDispatch();
+  const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -32,9 +36,12 @@ function App() {
   };
 
   useEffect(() => {
-    dispatch(fetchQuestions());
+    // 前回のダウンロードから3日経っていた場合のみ、再ダウンロードする
+    if (questionsLastUpdate + 1000 * 60 * 60 * 24 * 5 < Date.now()) {
+      dispatch(fetchQuestions());
+    }
     dispatch(fetchUser());
-  }, [dispatch]);
+  }, [dispatch, questionsLastUpdate]);
 
   return (
     <>
