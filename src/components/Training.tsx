@@ -99,7 +99,7 @@ export default function AnkiTraining() {
     dispatch(
       logUpdate({
         questions,
-        answers: session.selectedAnswers,
+        answers: session.currentSession.selectedAnswers,
       })
     );
 
@@ -128,7 +128,9 @@ export default function AnkiTraining() {
                 <RadioGroup
                   aria-label='choicesRadio'
                   name='choicesRadio'
-                  value={String(session.selectedAnswers[question.questionId])}
+                  value={String(
+                    session.currentSession.selectedAnswers[question.questionId]
+                  )}
                   onChange={handleChange}
                 >
                   {
@@ -161,8 +163,9 @@ export default function AnkiTraining() {
                 </Button>
               )}
               {answered &&
-              String(session.selectedAnswers[question.questionId]) ===
-                String(question.answer) ? (
+              String(
+                session.currentSession.selectedAnswers[question.questionId]
+              ) === String(question.answer) ? (
                 <p>正解です!🎉</p>
               ) : answered ? (
                 <p>不正解です。</p>
