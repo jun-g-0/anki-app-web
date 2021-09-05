@@ -61,10 +61,10 @@ export default function AnkiResult() {
 
   useEffect(() => {
     if (user.isSignedIn === 'signedIn') {
-      const userUid = user?.uid as string; // when user signedIn, Uid must not be null.
+      const userUid = user.ankiUser?.uid as string; // when user signedIn, Uid must not be null.
       dispatch(uploadAnswerLog({ userUid, answerLog }));
     }
-  }, [answerLog, dispatch, user.isSignedIn, user?.uid]);
+  }, [answerLog, dispatch, user.isSignedIn, user.ankiUser?.uid]);
 
   return (
     <>

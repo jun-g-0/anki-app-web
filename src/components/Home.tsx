@@ -8,7 +8,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { useHistory } from 'react-router-dom';
 
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { useAppSelector } from '../app/hooks';
 import { selectUser, selectUserDisplayName } from '../features/user/userSlice';
 
 const useStyles = makeStyles(() => ({
