@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Drawer,
@@ -15,23 +14,15 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-import firebase from '../Firebase';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 import { useHistory } from 'react-router-dom';
 
-const drawerWidth = 240;
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { selectUser, signOutThunk } from '../features/user/userSlice';
 
-function firebaseLogout() {
-  firebase
-    .auth()
-    .signOut()
-    .then(() => {
-      console.log('Logouted.');
-    })
-    .catch((error) => {
-      console.log('Fail to logout. error: ' + error);
-    });
-}
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -60,9 +51,14 @@ export default function AnkiDrawer(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [user, setUser] = useState<firebase.User | null>();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   let history = useHistory();
+
+  function firebaseLogout() {
+    dispatch(signOutThunk());
+  }
 
   function handleClickHome() {
     history.push('/');
@@ -80,11 +76,11 @@ export default function AnkiDrawer(props: Props) {
     history.push('/setting');
   }
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
-    });
-  }, []);
+  // useEffect(() => {
+  //   firebase.auth().onAuthStateChanged((user) => {
+  //     setUser(user);
+  //   });
+  // }, []);
 
   return (
     <>
@@ -165,24 +161,37 @@ export default function AnkiDrawer(props: Props) {
             <ListItemText primary='設定変更' />
           </ListItem>
 
-          <ListItem
-            button
-            key='logout'
-            onClick={() => {
-              firebaseLogout();
-              props.handleDrawerClose();
-              handleClickHome();
-            }}
-          >
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary='ログアウト' />
-          </ListItem>
-
-          <ListItem>
-            <ListItemText primary={user && `ユーザ: ${user.displayName}さん`} />
-          </ListItem>
+          {user.isSignedIn === 'signedIn' && (
+            <ListItem
+              button
+              key='logout'
+              onClick={() => {
+                firebaseLogout();
+                props.handleDrawerClose();
+                handleClickHome();
+              }}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary='ログアウト' />
+            </ListItem>
+          )}
+          {user.isSignedIn === 'NotSignedIn' && (
+            <ListItem
+              button
+              key='logout'
+              onClick={() => {
+                props.handleDrawerClose();
+                handleClickHome();
+              }}
+            >
+              <ListItemIcon>
+                <MeetingRoomIcon />
+              </ListItemIcon>
+              <ListItemText primary='ログイン' />
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </>

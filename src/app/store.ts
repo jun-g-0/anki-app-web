@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import settingsReducer from '../features/settings/settingsSlice';
+import userReducer from '../features/user/userSlice';
 
 import {
   persistStore,
@@ -23,6 +24,7 @@ const persistedSettingsReducer = persistReducer(persistConfig, settingsReducer);
 export const store = configureStore({
   reducer: {
     settings: persistedSettingsReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

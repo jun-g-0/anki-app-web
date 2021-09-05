@@ -17,12 +17,12 @@ describe('settings reducer', () => {
     });
   });
 
-  it('should handle increment', () => {
+  it('should handle tapMode/tapMode', () => {
     const actual = settingsReducer(initialState, setTapMode());
     expect(actual.tapMode).toEqual('tapMode');
   });
 
-  it('should handle decrement', () => {
+  it('should handle tapMode/buttonMode', () => {
     const actual = settingsReducer(initialState, setButtonMode());
     expect(actual.tapMode).toEqual('buttonMode');
   });
