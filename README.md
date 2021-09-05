@@ -11,7 +11,7 @@ It is a cold start server, so please wait for a while. If an error occurs, reloa
 
 *Features*
 - Sign-in (and upload settings and answer log.)
-- Saved session data and continuerable when training interrupted
+- Saved session data
 - Answer log and list of questions to review
 (mp4 will uploaded when upload function was created.)
 
