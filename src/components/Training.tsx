@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,10 +13,9 @@ import AnkiResult from './Result';
 
 // import Typography from '@material-ui/core/Typography';
 
-import { Question } from '../App';
-
 import { useAppSelector } from '../app/hooks';
 import { selectSettings } from '../features/settings/settingsSlice';
+import { selectQuestions } from '../features/questions/questionsSlice';
 
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 
@@ -40,26 +39,29 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type Props = {
-  questions: Question[];
-};
-
-export default function AnkiTraining(props: Props) {
+export default function AnkiTraining() {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
   let history = useHistory();
 
-  // control result
+  // questions
+  const questions = useAppSelector(selectQuestions);
+
+  // result
   const [sessionSelected, setSessionSelected] = useState<{
     [key: number]: string;
   }>({});
 
-  // control select
+  // selected choices
   const [selectedValue, setSelectedValue] = useState('');
   const [quesNum, setQuesNum] = useState(0);
   const [answerLogs, setAnswerLogs] = useState<{ [key: number]: string }>({});
 
+  // settings
   const settings = useAppSelector(selectSettings);
+
+  // question see now
+  const question = useMemo(() => questions[quesNum], [questions, quesNum]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (settings.tapMode === 'tapMode') {
@@ -68,7 +70,7 @@ export default function AnkiTraining(props: Props) {
     setSelectedValue(e.target.value);
 
     const tmp = sessionSelected;
-    tmp[props.questions[quesNum].questionId] = e.target.value;
+    tmp[question.questionId] = e.target.value;
     setSessionSelected(tmp);
   };
 
@@ -87,13 +89,13 @@ export default function AnkiTraining(props: Props) {
   // control move
   const handleMoveNext = () => {
     handleAnsweredFalse();
-    console.log(props.questions[quesNum + 1]);
+    console.log(questions[quesNum + 1]);
     setQuesNum(quesNum + 1);
   };
 
   const handleMovePrev = () => {
     handleAnsweredFalse();
-    console.log(props.questions[quesNum - 1]);
+    console.log(questions[quesNum - 1]);
     setQuesNum(quesNum - 1);
   };
 
@@ -110,8 +112,8 @@ export default function AnkiTraining(props: Props) {
     if (oldHistory) {
       hisObj = JSON.parse(oldHistory);
     }
-    for (let i = 0; i < props.questions.length; i++) {
-      const q = props.questions[i];
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
       let tf = +sessionSelected[q.questionId] === q.answer ? 't' : 'f';
       hisObj[q.questionId] = (tf + (hisObj[q.questionId] || '')).substr(0, 5);
     }
@@ -130,9 +132,9 @@ export default function AnkiTraining(props: Props) {
               // 問題表示欄
             }
             <Container maxWidth='md' className={classes.home}>
-              <Box>ID: {props.questions[quesNum].questionId}</Box>
+              <Box>ID: {question.questionId}</Box>
               <p style={{ whiteSpace: 'pre-line' }}>
-                {props.questions[quesNum].questionText.replaceAll('\\n', '\n')}
+                {question.questionText.replaceAll('\\n', '\n')}
               </p>
             </Container>
 
@@ -146,7 +148,7 @@ export default function AnkiTraining(props: Props) {
                 >
                   {
                     // 選択肢を一つずつ生成
-                    props.questions[quesNum].choices.map((e) => (
+                    question.choices.map((e) => (
                       <FormControlLabel
                         key={e.choiceId}
                         value={String(e.choiceId)}
@@ -173,8 +175,7 @@ export default function AnkiTraining(props: Props) {
                   正答
                 </Button>
               )}
-              {answered &&
-              +selectedValue === +props.questions[quesNum].answer ? (
+              {answered && +selectedValue === +question.answer ? (
                 <p>正解です!🎉</p>
               ) : answered ? (
                 <p>不正解です。</p>
@@ -182,7 +183,7 @@ export default function AnkiTraining(props: Props) {
               {answered && (
                 <div style={{ whiteSpace: 'pre-line' }}>
                   <p>解説</p>
-                  <p>{props.questions[quesNum].desc.replaceAll('\\n', '\n')}</p>
+                  <p>{question.desc.replaceAll('\\n', '\n')}</p>
                 </div>
               )}
             </Container>
@@ -200,7 +201,7 @@ export default function AnkiTraining(props: Props) {
                   前の問題
                 </Button>
               )}
-              {quesNum !== props.questions.length - 1 && (
+              {quesNum !== questions.length - 1 && (
                 <Button
                   variant='contained'
                   color='primary'
@@ -209,7 +210,7 @@ export default function AnkiTraining(props: Props) {
                   次の問題
                 </Button>
               )}
-              {quesNum === props.questions.length - 1 && (
+              {quesNum === questions.length - 1 && (
                 <Button
                   variant='contained'
                   color='secondary'
@@ -223,7 +224,6 @@ export default function AnkiTraining(props: Props) {
         </Route>
         <Route path={`${url}/result`}>
           <AnkiResult
-            questions={props.questions}
             sessionSelected={sessionSelected}
             setSessionSelected={setSessionSelected}
             answerLogs={answerLogs}

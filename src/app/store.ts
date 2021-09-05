@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import settingsReducer from '../features/settings/settingsSlice';
 import userReducer from '../features/user/userSlice';
+import questionsReducer from '../features/questions/questionsSlice';
 
 import {
   persistStore,
@@ -25,6 +26,7 @@ export const store = configureStore({
   reducer: {
     settings: persistedSettingsReducer,
     user: userReducer,
+    questions: questionsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

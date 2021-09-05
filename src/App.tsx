@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,24 +11,12 @@ import AnkiHome from './components/Home';
 import AnkiTraining from './components/Training';
 import AnkiSetting from './components/Setting';
 
-// for firebase
-import { db } from './Firebase';
-
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-type Choice = {
-  choiceId: number;
-  choiceText: string;
-};
-
-export type Question = {
-  questionId: number;
-  questionText: string;
-  type: string;
-  choices: Choice[];
-  answer: number | number[] | string;
-  desc: string;
-};
+import {  useAppDispatch } from './app/hooks';
+import {
+  fetchQuestions,
+} from './features/questions/questionsSlice';
 
 // React
 function App() {
@@ -42,24 +30,12 @@ function App() {
     setOpen(false);
   };
 
-  // control data
-  const [questions, setQuestions] = useState<Question[]>([]);
-
-  const fetchQuestions = async () => {
-    // get all qa-data
-    const snapshot = await db.collection('demo-qa').get();
-    let tmp: Question[] = [];
-    snapshot.forEach((doc) => {
-      tmp.push(doc.data() as Question);
-    });
-    tmp.sort((a, b) => +a.questionId - +b.questionId);
-    setQuestions(tmp);
-    console.log(tmp);
-  };
+  // control questions
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    fetchQuestions();
-  }, []);
+    dispatch(fetchQuestions());
+  }, [dispatch]);
 
   return (
     <>
@@ -77,10 +53,10 @@ function App() {
             <AnkiHome />
           </Route>
           <Route path='/training'>
-            <AnkiTraining questions={questions} />
+            <AnkiTraining />
           </Route>
           <Route path='/queslist'>
-            <AnkiQuesList questions={questions} />
+            <AnkiQuesList />
           </Route>
           <Route path='/setting'>
             <AnkiSetting />

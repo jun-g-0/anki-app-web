@@ -1,17 +1,17 @@
 import Button from '@material-ui/core/Button';
 import { Container } from '@material-ui/core';
-import { Question } from '../App';
 
-type Props = {
-  questions: Question[];
-};
+import { useAppSelector } from '../app/hooks';
+import { selectQuestions } from '../features/questions/questionsSlice';
 
-export default function AnkiQuesList(props: Props) {
+export default function AnkiQuesList() {
+  const questions = useAppSelector(selectQuestions);
+
   return (
     <>
       <Container maxWidth='md'>
         <ul>
-          {props.questions.map((question) => (
+          {questions.map((question) => (
             <ul key={question.questionId}>
               <p style={{ whiteSpace: 'pre-line' }}>
                 {question.questionText.replaceAll('\\n', '\n')}

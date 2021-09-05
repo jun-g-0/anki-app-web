@@ -8,8 +8,10 @@ import {
   Radio,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AnkiTraining from './Training';
 import { useHistory } from 'react-router-dom';
+
+import { useAppSelector } from '../app/hooks';
+import { selectQuestions } from '../features/questions/questionsSlice';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -37,8 +39,6 @@ const useStyles = makeStyles((_) => ({
   },
 }));
 
-type AnkiTrainingProps = React.ComponentProps<typeof AnkiTraining>;
-
 type Props = {
   sessionSelected: {
     [key: number]: string;
@@ -48,11 +48,13 @@ type Props = {
   >;
   answerLogs: { [key: number]: string };
   setQuesNum: React.Dispatch<React.SetStateAction<number>>;
-} & AnkiTrainingProps;
+};
 
 export default function AnkiResult(props: Props) {
   const classes = useStyles();
   let history = useHistory();
+
+  const questions = useAppSelector(selectQuestions);
 
   const handleReturn = () => {
     props.setSessionSelected({});
@@ -64,7 +66,7 @@ export default function AnkiResult(props: Props) {
     <>
       <Container maxWidth='md' className={classes.home}>
         <Container>
-          {props.questions.map((question) => (
+          {questions.map((question) => (
             <Container key={question.questionId} className={classes.question}>
               {/* {問題ID/回答} */}
               <Container className={classes.questionIdAndResult}>
