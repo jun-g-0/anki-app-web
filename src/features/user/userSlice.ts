@@ -77,14 +77,8 @@ export const userSlice = createSlice({
         state.isSignedIn = 'signedIn';
         state.ankiUser = {
           uid: action.payload.uid,
-          email:
-            typeof action.payload.email === 'string'
-              ? action.payload.email
-              : '',
-          displayName:
-            typeof action.payload.displayName === 'string'
-              ? action.payload.displayName
-              : '',
+          email: action.payload.email,
+          displayName: action.payload.displayName,
         };
       })
       .addCase(fetchUser.rejected, (state) => {
