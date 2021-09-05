@@ -3,20 +3,21 @@ import { RootState } from '../../app/store';
 
 import { Question } from '../questions/questionsSlice';
 
-export interface SessionState {
+export interface Session {
   selectedQuestions: Question[]; // いずれ、問題の絞り込みが必要になったとき用
   selectedAnswers: { [key: number]: number | number[] | string };
+}
+export interface SessionState {
+  currentSession: Session;
   currentQuestionNum: number;
-  lastSession: {
-    // 回答表示時用
-    selectedQuestions: Question[];
-    selectedAnswers: { [key: number]: number | number[] | string };
-  };
+  lastSession: Session;
 }
 
 export const initialState: SessionState = {
-  selectedQuestions: [],
-  selectedAnswers: {},
+  currentSession: {
+    selectedQuestions: [],
+    selectedAnswers: {},
+  },
   currentQuestionNum: 0,
   lastSession: {
     selectedQuestions: [],
@@ -29,17 +30,19 @@ export const sessionSlice = createSlice({
   initialState,
   reducers: {
     sessionInit: (state) => {
-      state.lastSession.selectedQuestions = state.selectedQuestions;
-      state.lastSession.selectedAnswers = state.selectedAnswers;
-      state.selectedQuestions = [];
-      state.selectedAnswers = {};
+      state.lastSession = { ...state.currentSession };
+      state.currentSession = {
+        selectedQuestions: [],
+        selectedAnswers: {},
+      };
       state.currentQuestionNum = 0;
     },
     selectedQuestionsUpdate: (state, action) => {
-      state.selectedQuestions = action.payload.questions;
+      state.currentSession.selectedQuestions = action.payload.questions;
     },
     answerSelected: (state, action) => {
-      state.selectedAnswers[action.payload.key] = action.payload.val;
+      state.currentSession.selectedAnswers[action.payload.key] =
+        action.payload.val;
     },
     questionMoved: (state, action) => {
       state.currentQuestionNum = action.payload;
@@ -61,9 +64,9 @@ export const selectSession = (state: RootState) => state.session;
 export const selectSessionQuesNum = (state: RootState) =>
   state.session.currentQuestionNum;
 export const selectSessionQuestions = (state: RootState) =>
-  state.session.selectedQuestions;
+  state.session.currentSession.selectedQuestions;
 export const selectSessionAnswers = (state: RootState) =>
-  state.session.selectedAnswers;
+  state.session.currentSession.selectedAnswers;
 export const selectLastSession = (state: RootState) =>
   state.session.lastSession;
 

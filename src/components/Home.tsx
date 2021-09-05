@@ -7,8 +7,9 @@ import firebase, { auth } from '../Firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { useHistory } from 'react-router-dom';
-import { useAppSelector } from '../app/hooks';
-import { selectUser } from '../features/user/userSlice';
+
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { selectUser, selectUserDisplayName } from '../features/user/userSlice';
 
 const useStyles = makeStyles(() => ({
   home: {
@@ -33,6 +34,7 @@ export default function AnkiHome() {
   const classes = useStyles();
   const history = useHistory();
   const user = useAppSelector(selectUser);
+  const userName = useAppSelector(selectUserDisplayName);
 
   function handleStart() {
     history.push('/training');
@@ -54,7 +56,7 @@ export default function AnkiHome() {
         </Button>
         <div style={{ whiteSpace: 'pre-line' }}>
           {user.isSignedIn === 'signedIn' ? (
-            `\n${user.displayName}さん、こんにちは！`
+            `\n${userName}さん、こんにちは！`
           ) : user.isSignedIn === 'NotSignedIn' ? (
             <StyledFirebaseAuth uiConfig={loginUiConfig} firebaseAuth={auth} />
           ) : null}
