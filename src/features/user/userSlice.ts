@@ -3,24 +3,23 @@ import { RootState } from '../../app/store';
 import firebase, { auth } from '../../Firebase';
 
 interface AnkiUser {
-  uid: string | null;
-  displayName: string | null;
-  email: string | null;
+  uid: string;
+  displayName: string;
+  email: string;
 }
 
-export interface UserState extends AnkiUser {
+export interface UserState {
   isSignedIn: 'pending' | 'signedIn' | 'NotSignedIn';
+  ankiUser: AnkiUser | null;
 }
 
 export const initialState: UserState = {
   isSignedIn: 'pending',
-  uid: null,
-  displayName: null,
-  email: null,
+  ankiUser: null,
 };
 
 // userを返すPromiseを自作する
-function authPromise() {
+function authPromise(): Promise<firebase.User> {
   return new Promise((resolve, reject) => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -37,12 +36,13 @@ function authPromise() {
 // 自作したuserを返すPromiseを呼び出し、返却されたPromise(Async/Await)をcreateAsyncThunkで書く
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   console.log('fetchUser fire.');
-  const response = (await authPromise()) as firebase.User;
+  const response = await authPromise();
   console.log('response: ', response);
   const persedUser: AnkiUser = {
     uid: response.uid,
-    email: response.email,
-    displayName: response.displayName,
+    email: typeof response.email === 'string' ? response.email : '',
+    displayName:
+      typeof response.displayName === 'string' ? response.displayName : '',
   };
   console.log('persedUser: ', persedUser);
   return persedUser;
@@ -75,9 +75,11 @@ export const userSlice = createSlice({
         console.log('fetchUser fulfilled case called.');
         console.log('action: ', action);
         state.isSignedIn = 'signedIn';
-        state.uid = action.payload.uid;
-        state.displayName = action.payload.displayName;
-        state.email = action.payload.email;
+        state.ankiUser = {
+          uid: action.payload.uid,
+          email: action.payload.email,
+          displayName: action.payload.displayName,
+        };
       })
       .addCase(fetchUser.rejected, (state) => {
         console.log('fetchUser rejected case called.');
@@ -90,9 +92,7 @@ export const userSlice = createSlice({
       .addCase(signOutThunk.fulfilled, (state) => {
         console.log('signOutThunk fulfilled case called.');
         state.isSignedIn = 'NotSignedIn';
-        state.uid = null;
-        state.displayName = null;
-        state.email = null;
+        state.ankiUser = null;
       });
   },
 });
@@ -103,5 +103,7 @@ export const userSlice = createSlice({
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.settings.value)`
 export const selectUser = (state: RootState) => state.user;
+export const selectUserDisplayName = (state: RootState) =>
+  state.user.ankiUser?.displayName;
 
 export default userSlice.reducer;
