@@ -14,6 +14,8 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 import { useHistory } from 'react-router-dom';
 
@@ -159,24 +161,35 @@ export default function AnkiDrawer(props: Props) {
             <ListItemText primary='設定変更' />
           </ListItem>
 
-          <ListItem
-            button
-            key='logout'
-            onClick={() => {
-              firebaseLogout();
-              props.handleDrawerClose();
-              handleClickHome();
-            }}
-          >
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary='ログアウト' />
-          </ListItem>
-
           {user.isSignedIn === 'signedIn' && (
-            <ListItem>
-              <ListItemText primary={`ユーザ: ${user.displayName}さん`} />
+            <ListItem
+              button
+              key='logout'
+              onClick={() => {
+                firebaseLogout();
+                props.handleDrawerClose();
+                handleClickHome();
+              }}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary='ログアウト' />
+            </ListItem>
+          )}
+          {user.isSignedIn === 'NotSignedIn' && (
+            <ListItem
+              button
+              key='logout'
+              onClick={() => {
+                props.handleDrawerClose();
+                handleClickHome();
+              }}
+            >
+              <ListItemIcon>
+                <MeetingRoomIcon />
+              </ListItemIcon>
+              <ListItemText primary='ログイン' />
             </ListItem>
           )}
         </List>
