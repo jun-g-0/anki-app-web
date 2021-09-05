@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/anki-app-web/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/anki-app-web/static/js/main.7e9a39eb.chunk.js",
+    "main.js.map": "/anki-app-web/static/js/main.7e9a39eb.chunk.js.map",
+    "runtime-main.js": "/anki-app-web/static/js/runtime-main.ca60b479.js",
+    "runtime-main.js.map": "/anki-app-web/static/js/runtime-main.ca60b479.js.map",
+    "static/js/2.736c416e.chunk.js": "/anki-app-web/static/js/2.736c416e.chunk.js",
+    "static/js/2.736c416e.chunk.js.map": "/anki-app-web/static/js/2.736c416e.chunk.js.map",
+    "static/js/3.426a67ee.chunk.js": "/anki-app-web/static/js/3.426a67ee.chunk.js",
+    "static/js/3.426a67ee.chunk.js.map": "/anki-app-web/static/js/3.426a67ee.chunk.js.map",
+    "index.html": "/anki-app-web/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/anki-app-web/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.736c416e.chunk.js.LICENSE.txt": "/anki-app-web/static/js/2.736c416e.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.ca60b479.js",
+    "static/js/2.736c416e.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.7e9a39eb.chunk.js"
+  ]
+}
