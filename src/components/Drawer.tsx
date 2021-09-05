@@ -74,12 +74,6 @@ export default function AnkiDrawer(props: Props) {
     history.push('/settings');
   }
 
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     setUser(user);
-  //   });
-  // }, []);
-
   return (
     <>
       <Drawer
