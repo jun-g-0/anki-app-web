@@ -1,6 +1,6 @@
-import questionsReducer, { initialState } from './questionsSlice';
+import questionsReducer, { initialState, Question } from './questionsSlice';
 
-const sampleQuestions = [
+export const sampleQuestions: Question[] = [
   {
     questionId: 1,
     questionText: `質問1の問題文です。`,

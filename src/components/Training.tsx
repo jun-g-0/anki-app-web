@@ -11,11 +11,17 @@ import FormControl from '@material-ui/core/FormControl';
 
 import AnkiResult from './Result';
 
-// import Typography from '@material-ui/core/Typography';
-
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectSettings } from '../features/settings/settingsSlice';
 import { selectQuestions } from '../features/questions/questionsSlice';
+import { logUpdate } from '../features/answerLog/answerLogSlice';
+import {
+  sessionInit,
+  answerSelected,
+  selectSession,
+  questionMoved,
+  selectSessionQuesNum,
+} from '../features/session/sessionSlice';
 
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 
@@ -43,35 +49,27 @@ export default function AnkiTraining() {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
   let history = useHistory();
+  const dispatch = useAppDispatch();
 
   // questions
   const questions = useAppSelector(selectQuestions);
 
-  // result
-  const [sessionSelected, setSessionSelected] = useState<{
-    [key: number]: string;
-  }>({});
-
-  // selected choices
-  const [selectedValue, setSelectedValue] = useState('');
-  const [quesNum, setQuesNum] = useState(0);
-  const [answerLogs, setAnswerLogs] = useState<{ [key: number]: string }>({});
+  // session
+  const session = useAppSelector(selectSession);
+  const quesNum = useAppSelector(selectSessionQuesNum);
 
   // settings
   const settings = useAppSelector(selectSettings);
 
-  // question see now
+  // question now
   const question = useMemo(() => questions[quesNum], [questions, quesNum]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (settings.tapMode === 'tapMode') {
       handleAnsweredTrue();
     }
-    setSelectedValue(e.target.value);
 
-    const tmp = sessionSelected;
-    tmp[question.questionId] = e.target.value;
-    setSessionSelected(tmp);
+    dispatch(answerSelected({ key: question.questionId, val: e.target.value }));
   };
 
   // control answer
@@ -81,46 +79,33 @@ export default function AnkiTraining() {
     setAnswered(true);
   };
 
-  const handleAnsweredFalse = () => {
+  const handleAnsweredFalse = (nextNum: number) => {
     setAnswered(false);
-    setSelectedValue('');
+    dispatch(questionMoved(nextNum));
   };
 
   // control move
   const handleMoveNext = () => {
-    handleAnsweredFalse();
-    console.log(questions[quesNum + 1]);
-    setQuesNum(quesNum + 1);
+    handleAnsweredFalse(quesNum + 1);
   };
 
   const handleMovePrev = () => {
-    handleAnsweredFalse();
-    console.log(questions[quesNum - 1]);
-    setQuesNum(quesNum - 1);
+    handleAnsweredFalse(quesNum - 1);
   };
 
   const handleResult = () => {
-    handleAnsweredFalse();
-    console.log(sessionSelected);
-    saveHistory();
-    history.push(`${url}/result`);
-  };
+    handleAnsweredFalse(0);
 
-  const saveHistory = () => {
-    const oldHistory = localStorage.getItem(HISTORY_KEY);
-    let hisObj: { [key: number]: string } = {};
-    if (oldHistory) {
-      hisObj = JSON.parse(oldHistory);
-    }
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      let tf = +sessionSelected[q.questionId] === q.answer ? 't' : 'f';
-      hisObj[q.questionId] = (tf + (hisObj[q.questionId] || '')).substr(0, 5);
-    }
-    const jsonHis = JSON.stringify(hisObj);
-    console.log(jsonHis);
-    localStorage.setItem(HISTORY_KEY, jsonHis);
-    setAnswerLogs(hisObj);
+    dispatch(
+      logUpdate({
+        questions,
+        answers: session.currentSession.selectedAnswers,
+      })
+    );
+
+    dispatch(sessionInit());
+
+    history.push(`${url}/result`);
   };
 
   return (
@@ -143,7 +128,9 @@ export default function AnkiTraining() {
                 <RadioGroup
                   aria-label='choicesRadio'
                   name='choicesRadio'
-                  value={selectedValue} // 選択肢はselectedValueと連動
+                  value={String(
+                    session.currentSession.selectedAnswers[question.questionId]
+                  )}
                   onChange={handleChange}
                 >
                   {
@@ -175,7 +162,10 @@ export default function AnkiTraining() {
                   正答
                 </Button>
               )}
-              {answered && +selectedValue === +question.answer ? (
+              {answered &&
+              String(
+                session.currentSession.selectedAnswers[question.questionId]
+              ) === String(question.answer) ? (
                 <p>正解です!🎉</p>
               ) : answered ? (
                 <p>不正解です。</p>
@@ -223,12 +213,7 @@ export default function AnkiTraining() {
           </Container>
         </Route>
         <Route path={`${url}/result`}>
-          <AnkiResult
-            sessionSelected={sessionSelected}
-            setSessionSelected={setSessionSelected}
-            answerLogs={answerLogs}
-            setQuesNum={setQuesNum}
-          />
+          <AnkiResult />
         </Route>
       </Switch>
     </>
