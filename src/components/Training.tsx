@@ -51,14 +51,10 @@ export default function AnkiTraining() {
   let history = useHistory();
   const dispatch = useAppDispatch();
 
-  // questions
+  // selectors
   const questions = useAppSelector(selectQuestions);
-
-  // session
   const session = useAppSelector(selectSession);
   const quesNum = useAppSelector(selectSessionQuesNum);
-
-  // settings
   const settings = useAppSelector(selectSettings);
 
   // question now
