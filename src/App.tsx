@@ -18,7 +18,8 @@ import {
   fetchQuestions,
   selectQuestionsLastUpdate,
 } from './features/questions/questionsSlice';
-import { fetchUser } from './features/user/userSlice';
+import { fetchUser, selectUser } from './features/user/userSlice';
+import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
 
 // React
 function App() {
@@ -26,6 +27,7 @@ function App() {
 
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
+  const user = useAppSelector(selectUser);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -42,6 +44,12 @@ function App() {
     }
     dispatch(fetchUser());
   }, [dispatch, questionsLastUpdate]);
+
+  useEffect(() => {
+    if (user.isSignedIn === 'signedIn') {
+      dispatch(fetchAnswerLog({ userUid: user.ankiUser?.uid as string }));
+    }
+  }, [dispatch, user]);
 
   return (
     <>

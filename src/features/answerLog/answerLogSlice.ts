@@ -26,6 +26,33 @@ export const uploadAnswerLog = createAsyncThunk(
   }
 );
 
+export function getFirestore(userUid: string) {
+  return new Promise((resolve, rejects) => {
+    db.collection('demoAnswerLog')
+      .doc(userUid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          resolve(doc.data());
+        } else {
+          rejects();
+        }
+      })
+      .catch((error) => {
+        console.log('Firestore Error getting document:', error);
+        rejects();
+      });
+  });
+}
+
+export const fetchAnswerLog = createAsyncThunk(
+  'answerLog/fetch',
+  async (payload: { userUid: string }) => {
+    const response = (await getFirestore(payload.userUid)) as AnswerLog;
+    return response;
+  }
+);
+
 export const answerLogSlice = createSlice({
   name: 'answerLog',
   initialState,
@@ -57,9 +84,9 @@ export const answerLogSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(uploadAnswerLog.fulfilled, (_, action) => {})
-      .addCase(uploadAnswerLog.rejected, (_, action) => {});
+    builder.addCase(fetchAnswerLog.fulfilled, (state, action) => {
+      state.answerLog = action.payload;
+    });
   },
 });
 
