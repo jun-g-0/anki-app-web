@@ -26,6 +26,8 @@ export function fetchSettingsFirestore(userUid: string) {
       .then((doc) => {
         if (doc.exists) {
           resolve(doc.data());
+        } else {
+          reject();
         }
       })
       .catch((error) => {
