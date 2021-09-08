@@ -64,7 +64,7 @@ export default function AnkiResult() {
       const userUid = user.ankiUser?.uid as string; // when user signedIn, Uid must not be null.
       dispatch(uploadAnswerLog({ userUid, answerLog }));
     }
-  }, [answerLog, dispatch, user.isSignedIn, user.ankiUser?.uid]);
+  }, [answerLog, dispatch, user]);
 
   return (
     <>

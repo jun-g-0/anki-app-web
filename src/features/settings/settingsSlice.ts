@@ -26,13 +26,6 @@ export function fetchSettingsFirestore(userUid: string) {
       .then((doc) => {
         if (doc.exists) {
           resolve(doc.data());
-        } else {
-          // upload current settings
-          // const currentSettings = store;
-          console.log(
-            'upload current settings > currentSettings: '
-            // currentSettings
-          );
         }
       })
       .catch((error) => {
@@ -45,8 +38,6 @@ export function fetchSettingsFirestore(userUid: string) {
 export const fetchSettings = createAsyncThunk(
   'settings/fetch',
   async (payload: { userUid: string }) => {
-    console.log('fetchSettings fired.');
-
     const response = (await fetchSettingsFirestore(
       payload.userUid
     )) as Settings;
@@ -57,7 +48,6 @@ export const fetchSettings = createAsyncThunk(
 export const uploadSettings = createAsyncThunk(
   'settings/upload',
   async (payload: { userUid: string; settings: Settings }) => {
-    console.log('uploadSettings fired.');
     const response = await db
       .collection('demoSettings')
       .doc(payload.userUid)

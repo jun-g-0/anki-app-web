@@ -31,7 +31,6 @@ export const initialState: QuestionsState = {
 export const fetchQuestions = createAsyncThunk(
   'questions/fetchQuestions',
   async () => {
-    console.log('questions/fetchQuestions fired.');
     const snapshot = await db.collection('demo-qa').get();
     let questions: Question[] = [];
     snapshot.forEach((doc) => {
