@@ -19,7 +19,16 @@ import {
   selectQuestionsLastUpdate,
 } from './features/questions/questionsSlice';
 import { fetchUser, selectUser } from './features/user/userSlice';
-import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
+import {
+  fetchAnswerLog,
+  selectAnswerLog,
+  uploadAnswerLog,
+} from './features/answerLog/answerLogSlice';
+import {
+  fetchSettings,
+  selectSettings,
+  uploadSettings,
+} from './features/settings/settingsSlice';
 
 // React
 function App() {
@@ -28,6 +37,8 @@ function App() {
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
   const user = useAppSelector(selectUser);
+  const settings = useAppSelector(selectSettings);
+  const answerLog = useAppSelector(selectAnswerLog);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -47,8 +58,14 @@ function App() {
 
   useEffect(() => {
     if (user.isSignedIn === 'signedIn') {
-      dispatch(fetchAnswerLog({ userUid: user.ankiUser?.uid as string }));
+      const userUid = user.ankiUser?.uid as string;
+      dispatch(fetchAnswerLog({ userUid }));
+      dispatch(fetchSettings({ userUid }));
+      dispatch(uploadSettings({ userUid, settings }));
+      dispatch(uploadAnswerLog({ userUid, answerLog }));
     }
+    // 初期ログイン時のみの異例処理につき、settings、answerLogへの参照は不要
+    // eslint-disable-next-line
   }, [dispatch, user]);
 
   return (

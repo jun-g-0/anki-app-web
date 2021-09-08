@@ -18,9 +18,46 @@ export const initialState: SettingsState = {
   },
 };
 
+export function fetchSettingsFirestore(userUid: string) {
+  return new Promise((resolve, reject) => {
+    db.collection('demoSettings')
+      .doc(userUid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          resolve(doc.data());
+        } else {
+          // upload current settings
+          // const currentSettings = store;
+          console.log(
+            'upload current settings > currentSettings: '
+            // currentSettings
+          );
+        }
+      })
+      .catch((error) => {
+        console.log('Firestore Error updating settings: ', error);
+        reject();
+      });
+  });
+}
+
+export const fetchSettings = createAsyncThunk(
+  'settings/fetch',
+  async (payload: { userUid: string }) => {
+    console.log('fetchSettings fired.');
+
+    const response = (await fetchSettingsFirestore(
+      payload.userUid
+    )) as Settings;
+    return response;
+  }
+);
+
 export const uploadSettings = createAsyncThunk(
   'settings/upload',
   async (payload: { userUid: string; settings: Settings }) => {
+    console.log('uploadSettings fired.');
     const response = await db
       .collection('demoSettings')
       .doc(payload.userUid)
@@ -40,6 +77,13 @@ export const settingsSlice = createSlice({
     setButtonMode: (state) => {
       state.settings.tapMode = 'buttonMode';
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchSettings.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.settings = action.payload;
+      }
+    });
   },
 });
 
