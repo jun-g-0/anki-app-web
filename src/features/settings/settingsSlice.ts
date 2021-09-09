@@ -18,7 +18,7 @@ export const initialState: SettingsState = {
   },
 };
 
-export function fetchSettingsFirestore(userUid: string) {
+export function fetchSettingsFirestore(userUid: string, settings: Settings) {
   return new Promise((resolve, reject) => {
     db.collection('demoSettings')
       .doc(userUid)
@@ -27,7 +27,9 @@ export function fetchSettingsFirestore(userUid: string) {
         if (doc.exists) {
           resolve(doc.data());
         } else {
-          reject();
+          // docが存在しない、初回ログイン時のみ、ローカルのデータをアップロード
+          db.collection('demoSettings').doc(userUid).set(settings);
+          resolve(settings);
         }
       })
       .catch((error) => {
@@ -39,9 +41,10 @@ export function fetchSettingsFirestore(userUid: string) {
 
 export const fetchSettings = createAsyncThunk(
   'settings/fetch',
-  async (payload: { userUid: string }) => {
+  async (payload: { userUid: string; settings: Settings }) => {
     const response = (await fetchSettingsFirestore(
-      payload.userUid
+      payload.userUid,
+      payload.settings
     )) as Settings;
     return response;
   }
