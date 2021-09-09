@@ -22,12 +22,10 @@ import { fetchUser, selectUser } from './features/user/userSlice';
 import {
   fetchAnswerLog,
   selectAnswerLog,
-  uploadAnswerLog,
 } from './features/answerLog/answerLogSlice';
 import {
   fetchSettings,
   selectSettings,
-  uploadSettings,
 } from './features/settings/settingsSlice';
 
 // React
@@ -59,10 +57,8 @@ function App() {
   useEffect(() => {
     if (user.isSignedIn === 'signedIn') {
       const userUid = user.ankiUser?.uid as string;
-      dispatch(fetchAnswerLog({ userUid }));
-      dispatch(fetchSettings({ userUid }));
-      dispatch(uploadSettings({ userUid, settings }));
-      dispatch(uploadAnswerLog({ userUid, answerLog }));
+      dispatch(fetchAnswerLog({ userUid, answerLog }));
+      dispatch(fetchSettings({ userUid, settings }));
     }
     // 初期ログイン時のみの異例処理につき、settings、answerLogへの参照は不要
     // eslint-disable-next-line
