@@ -26,7 +26,7 @@ export const uploadAnswerLog = createAsyncThunk(
   }
 );
 
-export function getFirestore(userUid: string) {
+export function getFirestore(userUid: string, answerLog: AnswerLog) {
   return new Promise((resolve, rejects) => {
     db.collection('demoAnswerLog')
       .doc(userUid)
@@ -35,7 +35,9 @@ export function getFirestore(userUid: string) {
         if (doc.exists) {
           resolve(doc.data());
         } else {
-          rejects();
+          // docが存在しない、初回ログイン時のみ、ローカルのデータをアップロード
+          db.collection('demoAnswerLog').doc(userUid).set(answerLog);
+          resolve(answerLog);
         }
       })
       .catch((error) => {
@@ -47,8 +49,11 @@ export function getFirestore(userUid: string) {
 
 export const fetchAnswerLog = createAsyncThunk(
   'answerLog/fetch',
-  async (payload: { userUid: string }) => {
-    const response = (await getFirestore(payload.userUid)) as AnswerLog;
+  async (payload: { userUid: string; answerLog: AnswerLog }) => {
+    const response = (await getFirestore(
+      payload.userUid,
+      payload.answerLog
+    )) as AnswerLog;
     return response;
   }
 );
