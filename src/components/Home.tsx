@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 
 import firebase, { auth } from '../Firebase';
-import FirebaseUIAuth from 'react-firebaseui-localized';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { useHistory } from 'react-router-dom';
 
@@ -57,14 +57,7 @@ export default function AnkiHome() {
           {user.isSignedIn === 'signedIn' ? (
             `\n${userName}さん、こんにちは！`
           ) : user.isSignedIn === 'NotSignedIn' ? (
-            <FirebaseUIAuth
-              lang='ja'
-              version='4.8.1'
-              rtl={false}
-              config={loginUiConfig}
-              auth={auth}
-              firebase={firebase}
-            />
+            <StyledFirebaseAuth uiConfig={loginUiConfig} firebaseAuth={auth} />
           ) : null}
         </div>
       </Container>
