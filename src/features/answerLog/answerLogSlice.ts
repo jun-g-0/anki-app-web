@@ -49,10 +49,14 @@ export function getFirestore(userUid: string, answerLog: AnswerLog) {
 
 export const fetchAnswerLog = createAsyncThunk(
   'answerLog/fetch',
-  async (payload: { userUid: string; answerLog: AnswerLog }) => {
+  async (payload: { userUid: string }, thunkAPI) => {
+    // 初回のログイン時には、Reduxでローカルに保管していたデータをアップロードする
+    const rootState = thunkAPI.getState() as RootState;
+    const answerLog = rootState.answerLog.answerLog;
+
     const response = (await getFirestore(
       payload.userUid,
-      payload.answerLog
+      answerLog
     )) as AnswerLog;
     return response;
   }

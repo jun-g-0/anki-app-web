@@ -58,11 +58,9 @@ function App() {
   useEffect(() => {
     if (user.isSignedIn === 'signedIn') {
       const userUid = user.ankiUser?.uid as string;
-      dispatch(fetchAnswerLog({ userUid, answerLog }));
-      dispatch(fetchSettings({ userUid, settings }));
+      dispatch(fetchAnswerLog({ userUid }));
+      dispatch(fetchSettings({ userUid }));
     }
-    // 初期ログイン時のみの異例処理につき、settings、answerLogへの参照は不要
-    // eslint-disable-next-line
   }, [dispatch, user]);
 
   return (
