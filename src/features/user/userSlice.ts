@@ -55,7 +55,6 @@ function fetchAdmin(userUid: string): Promise<boolean> {
 // 自作したuserを返すPromiseを呼び出し、返却されたPromise(Async/Await)をcreateAsyncThunkで書く
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   const response = await authPromise();
-  console.log('response: ', response);
   const persedUser: AnkiUser = {
     uid: response.uid,
     email: typeof response.email === 'string' ? response.email : '',

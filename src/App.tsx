@@ -10,6 +10,7 @@ import AnkiQuesList from './components/QuesList';
 import AnkiHome from './components/Home';
 import AnkiTraining from './components/Training';
 import AnkiSetting from './components/Setting';
+import AnkiAdmin from './components/Admin';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
@@ -87,6 +88,9 @@ function App() {
           </Route>
           <Route path='/settings'>
             <AnkiSetting />
+          </Route>
+          <Route path='/admin'>
+            <AnkiAdmin />
           </Route>
         </Switch>
       </BrowserRouter>
