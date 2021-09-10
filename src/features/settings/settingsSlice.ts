@@ -41,10 +41,14 @@ export function fetchSettingsFirestore(userUid: string, settings: Settings) {
 
 export const fetchSettings = createAsyncThunk(
   'settings/fetch',
-  async (payload: { userUid: string; settings: Settings }) => {
+  async (payload: { userUid: string; }, thunkAPI) => {
+    // 初回のログイン時には、Reduxでローカルに保管していたデータをアップロードする
+    const rootState = thunkAPI.getState() as RootState;
+    const settings = rootState.settings.settings;
+
     const response = (await fetchSettingsFirestore(
       payload.userUid,
-      payload.settings
+      settings
     )) as Settings;
     return response;
   }
