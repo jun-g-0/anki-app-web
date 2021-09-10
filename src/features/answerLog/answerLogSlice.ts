@@ -41,7 +41,7 @@ export function getFirestore(userUid: string, answerLog: AnswerLog) {
         }
       })
       .catch((error) => {
-        console.log('Firestore Error getting document:', error);
+        console.log('Firestore Error getting document demoAnswerLog:', error);
         rejects();
       });
   });
