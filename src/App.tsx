@@ -20,14 +20,8 @@ import {
   selectQuestionsLastUpdate,
 } from './features/questions/questionsSlice';
 import { fetchUser, selectUser } from './features/user/userSlice';
-import {
-  fetchAnswerLog,
-  selectAnswerLog,
-} from './features/answerLog/answerLogSlice';
-import {
-  fetchSettings,
-  selectSettings,
-} from './features/settings/settingsSlice';
+import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
+import { fetchSettings } from './features/settings/settingsSlice';
 
 // React
 function App() {
@@ -36,8 +30,6 @@ function App() {
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
   const user = useAppSelector(selectUser);
-  const settings = useAppSelector(selectSettings);
-  const answerLog = useAppSelector(selectAnswerLog);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -75,19 +67,19 @@ function App() {
         ></AnkiDrawer>
 
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <AnkiHome />
           </Route>
-          <Route path='/training'>
+          <Route path="/training">
             <AnkiTraining />
           </Route>
-          <Route path='/queslist'>
+          <Route path="/queslist">
             <AnkiQuesList />
           </Route>
-          <Route path='/settings'>
+          <Route path="/settings">
             <AnkiSetting />
           </Route>
-          <Route path='/admin'>
+          <Route path="/admin">
             <AnkiAdmin />
           </Route>
         </Switch>

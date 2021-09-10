@@ -112,18 +112,18 @@ export default function AnkiTraining() {
             {
               // 問題表示欄
             }
-            <Container maxWidth='md' className={classes.home}>
+            <Container maxWidth="md" className={classes.home}>
               <Box>ID: {question.questionId}</Box>
               <p style={{ whiteSpace: 'pre-line' }}>
                 {question.questionText.replaceAll('\\n', '\n')}
               </p>
             </Container>
 
-            <Container maxWidth='md' className={classes.home}>
-              <FormControl component='fieldset'>
+            <Container maxWidth="md" className={classes.home}>
+              <FormControl component="fieldset">
                 <RadioGroup
-                  aria-label='choicesRadio'
-                  name='choicesRadio'
+                  aria-label="choicesRadio"
+                  name="choicesRadio"
                   value={String(
                     session.currentSession.selectedAnswers[question.questionId]
                   )}
@@ -148,11 +148,11 @@ export default function AnkiTraining() {
             {
               // 正答表示/解説表示欄
             }
-            <Container maxWidth='md' className={classes.home}>
+            <Container maxWidth="md" className={classes.home}>
               {settings.tapMode === 'buttonMode' && (
                 <Button
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   onClick={handleAnsweredTrue}
                 >
                   正答
@@ -177,11 +177,11 @@ export default function AnkiTraining() {
             {
               // ナビゲーション欄
             }
-            <Container maxWidth='md' className={classes.nav}>
+            <Container maxWidth="md" className={classes.nav}>
               {quesNum !== 0 && (
                 <Button
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   onClick={handleMovePrev}
                 >
                   前の問題
@@ -189,8 +189,8 @@ export default function AnkiTraining() {
               )}
               {quesNum !== questions.length - 1 && (
                 <Button
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   onClick={handleMoveNext}
                 >
                   次の問題
@@ -198,8 +198,8 @@ export default function AnkiTraining() {
               )}
               {quesNum === questions.length - 1 && (
                 <Button
-                  variant='contained'
-                  color='secondary'
+                  variant="contained"
+                  color="secondary"
                   onClick={handleResult}
                 >
                   回答終了
