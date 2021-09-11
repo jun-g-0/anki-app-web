@@ -1,13 +1,63 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 import { Question } from '../questions/questionsSlice';
 
-export interface AnswerLogState {
-  [ket: number]: boolean[];
+import { db } from '../../Firebase';
+
+export interface AnswerLog {
+  [key: number]: boolean[];
 }
 
-export const initialState: AnswerLogState = {};
+export interface AnswerLogState {
+  answerLog: AnswerLog;
+}
+
+export const initialState: AnswerLogState = { answerLog: {} };
+
+export const uploadAnswerLog = createAsyncThunk(
+  'answerLog/upload',
+  async (payload: { userUid: string; answerLog: AnswerLog }) => {
+    const response = await db
+      .collection('demoAnswerLog')
+      .doc(payload.userUid)
+      .set(payload.answerLog);
+    return response;
+  }
+);
+
+export function getAnswerLog(userUid: string, answerLog: AnswerLog) {
+  return new Promise<AnswerLog>((resolve, rejects) => {
+    db.collection('demoAnswerLog')
+      .doc(userUid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          resolve(doc.data() as AnswerLog);
+        } else {
+          // docが存在しない、初回ログイン時のみ、ローカルのデータをアップロード
+          db.collection('demoAnswerLog').doc(userUid).set(answerLog);
+          resolve(answerLog);
+        }
+      })
+      .catch((error) => {
+        console.log('Firestore Error getting document:', error);
+        rejects();
+      });
+  });
+}
+
+export const fetchAnswerLog = createAsyncThunk(
+  'answerLog/fetch',
+  async (payload: { userUid: string }, thunkAPI) => {
+    // 初回のログイン時には、Reduxでローカルに保管していたデータをアップロードする
+    const rootState = thunkAPI.getState() as RootState;
+    const answerLog = rootState.answerLog.answerLog;
+
+    const response = await getAnswerLog(payload.userUid, answerLog);
+    return response;
+  }
+);
 
 export const answerLogSlice = createSlice({
   name: 'answerLog',
@@ -29,15 +79,20 @@ export const answerLogSlice = createSlice({
         }
 
         // save log
-        if (!state[question.questionId]) {
-          state[question.questionId] = [];
+        if (!state.answerLog[question.questionId]) {
+          state.answerLog[question.questionId] = [];
         }
-        state[question.questionId].unshift(trueOrFalse);
-        if (state[question.questionId].length > 5) {
-          state[question.questionId].pop();
+        state.answerLog[question.questionId].unshift(trueOrFalse);
+        if (state.answerLog[question.questionId].length > 5) {
+          state.answerLog[question.questionId].pop();
         }
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAnswerLog.fulfilled, (state, action) => {
+      state.answerLog = action.payload;
+    });
   },
 });
 
@@ -46,6 +101,6 @@ export const { logUpdate } = answerLogSlice.actions;
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.settings.value)`
-export const selectAnswerLog = (state: RootState) => state.answerLog;
+export const selectAnswerLog = (state: RootState) => state.answerLog.answerLog;
 
 export default answerLogSlice.reducer;

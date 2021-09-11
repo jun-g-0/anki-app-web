@@ -27,7 +27,7 @@ describe('settings reducer', () => {
 
     for (let i = 0; i < sampleQuestions.length; i++) {
       const question = sampleQuestions[i];
-      expect(actual[question.questionId]).toEqual([true]);
+      expect(actual.answerLog[question.questionId]).toEqual([true]);
     }
   });
 });

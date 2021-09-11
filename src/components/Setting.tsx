@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Container,
@@ -10,12 +10,14 @@ import {
 } from '@material-ui/core';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import  {
-  SettingsState,
+import {
   setTapMode,
   setButtonMode,
   selectSettingsTapMode,
+  uploadSettings,
+  selectSettings,
 } from '../features/settings/settingsSlice';
+import { selectUser } from '../features/user/userSlice';
 
 export const SETTING_LOCAL_KEY = 'ANKI_WEB_TEST_SETTING';
 
@@ -48,11 +50,24 @@ const useStyles = makeStyles((_) => ({
 
 export default function AnkiQuesList() {
   const classes = useStyles();
+  const settings = useAppSelector(selectSettings);
   const tapMode = useAppSelector(selectSettingsTapMode);
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+
+  useEffect(() => {
+    if (user.isSignedIn === 'signedIn') {
+      dispatch(
+        uploadSettings({
+          userUid: user.ankiUser?.uid as string,
+          settings: settings,
+        })
+      );
+    }
+  }, [user, dispatch, settings]);
 
   const changeTapMode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.value as SettingsState['tapMode']) {
+    switch (e.target.value as string) {
       case 'tapMode':
         dispatch(setTapMode());
         break;

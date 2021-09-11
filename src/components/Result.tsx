@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import {
   Container,
@@ -10,10 +10,14 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectQuestions } from '../features/questions/questionsSlice';
-import { selectAnswerLog } from '../features/answerLog/answerLogSlice';
+import {
+  selectAnswerLog,
+  uploadAnswerLog,
+} from '../features/answerLog/answerLogSlice';
 import { selectLastSession } from '../features/session/sessionSlice';
+import { selectUser } from '../features/user/userSlice';
 
 const useStyles = makeStyles((_) => ({
   home: {
@@ -45,13 +49,22 @@ export default function AnkiResult() {
   const classes = useStyles();
   let history = useHistory();
 
+  const dispatch = useAppDispatch();
   const questions = useAppSelector(selectQuestions);
   const lastSession = useAppSelector(selectLastSession);
   const answerLog = useAppSelector(selectAnswerLog);
+  const user = useAppSelector(selectUser);
 
   const handleReturn = () => {
     history.push('/');
   };
+
+  useEffect(() => {
+    if (user.isSignedIn === 'signedIn') {
+      const userUid = user.ankiUser?.uid as string; // when user signedIn, Uid must not be null.
+      dispatch(uploadAnswerLog({ userUid, answerLog }));
+    }
+  }, [answerLog, dispatch, user]);
 
   return (
     <>
