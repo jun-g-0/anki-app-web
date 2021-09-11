@@ -27,13 +27,13 @@ export const uploadAnswerLog = createAsyncThunk(
 );
 
 export function getAnswerLog(userUid: string, answerLog: AnswerLog) {
-  return new Promise((resolve, rejects) => {
+  return new Promise<AnswerLog>((resolve, rejects) => {
     db.collection('demoAnswerLog')
       .doc(userUid)
       .get()
       .then((doc) => {
         if (doc.exists) {
-          resolve(doc.data());
+          resolve(doc.data() as AnswerLog);
         } else {
           // docが存在しない、初回ログイン時のみ、ローカルのデータをアップロード
           db.collection('demoAnswerLog').doc(userUid).set(answerLog);
@@ -54,10 +54,7 @@ export const fetchAnswerLog = createAsyncThunk(
     const rootState = thunkAPI.getState() as RootState;
     const answerLog = rootState.answerLog.answerLog;
 
-    const response = (await getAnswerLog(
-      payload.userUid,
-      answerLog
-    )) as AnswerLog;
+    const response = await getAnswerLog(payload.userUid, answerLog);
     return response;
   }
 );
