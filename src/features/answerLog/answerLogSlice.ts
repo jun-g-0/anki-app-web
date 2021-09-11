@@ -26,7 +26,7 @@ export const uploadAnswerLog = createAsyncThunk(
   }
 );
 
-export function getFirestore(userUid: string, answerLog: AnswerLog) {
+export function getAnswerLog(userUid: string, answerLog: AnswerLog) {
   return new Promise((resolve, rejects) => {
     db.collection('demoAnswerLog')
       .doc(userUid)
@@ -54,7 +54,7 @@ export const fetchAnswerLog = createAsyncThunk(
     const rootState = thunkAPI.getState() as RootState;
     const answerLog = rootState.answerLog.answerLog;
 
-    const response = (await getFirestore(
+    const response = (await getAnswerLog(
       payload.userUid,
       answerLog
     )) as AnswerLog;
