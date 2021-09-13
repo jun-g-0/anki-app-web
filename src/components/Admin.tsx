@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { Box, Container, TextField, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -12,9 +13,55 @@ import {
   updateQuestion,
 } from '../features/questions/questionsSlice';
 
+const useStyles = makeStyles((_) => ({
+  admin: {
+    display: 'flex',
+    alignItems: 'left',
+    justifyContent: 'space-around',
+    flexDirection: 'column',
+    padding: '20px',
+  },
+  adminBlocks: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px 20px 0px 20px',
+  },
+  adminQuestions: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  adminQuestionsContents: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px 0px 0px 0px',
+  },
+  adminChoices: {
+    display: 'flex',
+    alignItems: 'left',
+    flexDirection: 'column',
+    padding: '0px 20px 0px 20px',
+  },
+  adminChoice: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  adminButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    padding: '20px 0px 0px 0px',
+  },
+  adminButton: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '40%',
+  },
+}));
+
 export default function AnkiAdmin() {
   const questions = useAppSelector(selectQuestions);
   const dispatch = useAppDispatch();
+  const classes = useStyles();
 
   const [questionState, setQuestionState] = useState(questions);
 
@@ -90,65 +137,87 @@ export default function AnkiAdmin() {
 
   return (
     <>
-      <Container>
+      <Container className={classes.admin} maxWidth="sm">
         <NewQuestion refreshQuestions={refreshQuestions} />
 
-        <Box>
-          <Typography>既存問題の更新</Typography>
-        </Box>
-        {questionState.map((question) => (
-          <Box key={question.questionId}>
-            <Typography>問題ID: {question.questionId}</Typography>
-            <TextField
-              id={`${question.questionId}.questionText`}
-              label="問題"
-              multiline
-              value={question.questionText.replaceAll('\\n', '\n')}
-              onChange={handleChange}
-            />
+        <Box className={classes.adminBlocks}>
+          <Typography variant="h6">既存問題の更新</Typography>
+          {questionState.map((question) => (
+            <Box key={question.questionId}>
+              <Box className={classes.adminQuestionsContents}>
+                <Typography variant="subtitle1">
+                  問題ID: {question.questionId}
+                </Typography>
+              </Box>
 
-            <Box>
-              <Typography>選択肢</Typography>
-              {question.choices.map((choice) => {
-                return (
-                  <Box key={choice.choiceId}>
-                    <Typography></Typography>
-                    <TextField
-                      id={`${question.questionId}.choices.${choice.choiceId}.choiceText`}
-                      label={`選択肢ID: ${choice.choiceId}`}
-                      value={choice.choiceText}
-                      onChange={handleChange}
-                    />
+              <Box>
+                <Box
+                  key={question.questionId}
+                  className={classes.adminQuestionsContents}
+                >
+                  <TextField
+                    id={`${question.questionId}.questionText`}
+                    label="問題"
+                    multiline
+                    value={question.questionText.replaceAll('\\n', '\n')}
+                    onChange={handleChange}
+                  />
+                </Box>
+
+                <Box className={classes.adminQuestionsContents}>
+                  <Typography>選択肢</Typography>
+                  <Box className={classes.adminChoices}>
+                    {question.choices.map((choice) => {
+                      return (
+                        <Box
+                          key={choice.choiceId}
+                          className={classes.adminChoice}
+                        >
+                          <TextField
+                            id={`${question.questionId}.choices.${choice.choiceId}.choiceText`}
+                            label={`選択肢ID: ${choice.choiceId}`}
+                            value={choice.choiceText}
+                            onChange={handleChange}
+                          />
+                        </Box>
+                      );
+                    })}
                   </Box>
-                );
-              })}
+                </Box>
+                <Box className={classes.adminQuestionsContents}>
+                  <TextField
+                    id={`${question.questionId}.desc`}
+                    label="解説"
+                    multiline
+                    value={question.desc.replaceAll('\\n', '\n')}
+                    onChange={handleChange}
+                  />
+                </Box>
+
+                <Box className={classes.adminButtons}>
+                  <Box className={classes.adminButton}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleUpdate(question.questionId)}
+                    >
+                      更新
+                    </Button>
+                  </Box>
+                  <Box className={classes.adminButton}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDelete(question.questionId)}
+                    >
+                      削除
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
-
-            <TextField
-              id={`${question.questionId}.desc`}
-              label="解説"
-              multiline
-              value={question.desc.replaceAll('\\n', '\n')}
-              onChange={handleChange}
-            />
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleUpdate(question.questionId)}
-            >
-              更新
-            </Button>
-
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleDelete(question.questionId)}
-            >
-              削除
-            </Button>
-          </Box>
-        ))}
+          ))}
+        </Box>
       </Container>
     </>
   );
@@ -160,6 +229,7 @@ interface Props {
 
 function NewQuestion(props: Props) {
   const dispatch = useAppDispatch();
+  const classes = useStyles();
 
   const [newQuestion, setNewQuestion] = useState({
     questionId: 0,
@@ -167,9 +237,9 @@ function NewQuestion(props: Props) {
     desc: '',
     idValidation: false,
     choices: [
-      { choiceId: 1, choiceText: `No.1 choice.` },
-      { choiceId: 2, choiceText: `No.2 choice.` },
-      { choiceId: 3, choiceText: `No.3 choice.` },
+      { choiceId: 1, choiceText: `` },
+      { choiceId: 2, choiceText: `` },
+      { choiceId: 3, choiceText: `` },
     ],
   });
   const [idError, setIdError] = useState(false);
@@ -251,34 +321,35 @@ function NewQuestion(props: Props) {
 
   return (
     <>
-      <Box>
-        <Typography>新規問題の作成</Typography>
-      </Box>
-      <Box key="newQuestion">
-        <TextField
-          id="questionId"
-          label="ID"
-          defaultValue=""
-          error={idError}
-          onChange={handleChange}
-        />
+      <Box className={classes.adminBlocks}>
+        <Typography variant="h6">新規問題の作成</Typography>
+        <Box>
+          <TextField
+            id="questionId"
+            label="ID"
+            defaultValue=""
+            error={idError}
+            onChange={handleChange}
+          />
+        </Box>
 
         <TextField
           id="questionText"
-          label="問題"
+          label="問題文"
           multiline
+          rows={2}
           value={newQuestion.questionText}
           onChange={handleChange}
         />
 
-        <Box>
-          <Typography>選択肢</Typography>
+        <Typography variant="subtitle1">選択肢</Typography>
+        <Box className={classes.adminChoices}>
           {newQuestion.choices.map((choice) => {
             return (
-              <Box key={choice.choiceId}>
+              <Box key={choice.choiceId} className={classes.adminChoice}>
                 <TextField
                   id={`choices.${choice.choiceId}.choiceText`}
-                  label={`選択肢ID: ${choice.choiceId}`}
+                  label={`選択肢ID: ${choice.choiceId} テキスト`}
                   value={choice.choiceText}
                   onChange={handleChange}
                 />
@@ -291,12 +362,15 @@ function NewQuestion(props: Props) {
           id="desc"
           label="解説"
           multiline
+          rows={2}
           value={newQuestion.desc}
           onChange={handleChange}
         />
-        <Button variant="contained" color="primary" onClick={handleCreate}>
-          作成
-        </Button>
+        <Box className={classes.adminBlocks}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            作成
+          </Button>
+        </Box>
       </Box>
     </>
   );
