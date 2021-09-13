@@ -112,10 +112,10 @@ export default function AnkiAdmin() {
               {question.choices.map((choice) => {
                 return (
                   <Box key={choice.choiceId}>
-                    <Typography>選択肢ID: {choice.choiceId}</Typography>
+                    <Typography></Typography>
                     <TextField
                       id={`${question.questionId}.choices.${choice.choiceId}.choiceText`}
-                      label="選択肢"
+                      label={`選択肢ID: ${choice.choiceId}`}
                       value={choice.choiceText}
                       onChange={handleChange}
                     />
@@ -166,11 +166,16 @@ function NewQuestion(props: Props) {
     questionText: '',
     desc: '',
     idValidation: false,
+    choices: [
+      { choiceId: 1, choiceText: `No.1 choice.` },
+      { choiceId: 2, choiceText: `No.2 choice.` },
+      { choiceId: 3, choiceText: `No.3 choice.` },
+    ],
   });
   const [idError, setIdError] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const targetProperty = e.target.id;
+    const targetProperty = e.target.id.split('.')[0];
     const targetValue = e.target.value;
 
     // 入力されたIDが数字でない場合は警告を表示
@@ -180,7 +185,10 @@ function NewQuestion(props: Props) {
       !Number.isInteger(Number(targetValue))
     ) {
       setIdError(true);
-    } else {
+    } else if (
+      targetProperty === 'questionId' &&
+      Number.isInteger(Number(targetValue))
+    ) {
       setIdError(false);
     }
 
@@ -203,6 +211,28 @@ function NewQuestion(props: Props) {
         ...newQuestion,
         questionId: Number(targetValue),
       });
+    } else if (targetProperty === 'choices') {
+      const targetChoiceId = e.target.id.split('.')[1];
+      const targetChoiceProperty = e.target.id.split('.')[2];
+
+      if (targetChoiceProperty === 'choiceText') {
+        const newChoices: Choice[] = [];
+
+        for (let j = 0; j < newQuestion.choices.length; j++) {
+          const choice = newQuestion.choices[j];
+
+          if (choice.choiceId === Number(targetChoiceId)) {
+            newChoices.push({ ...choice, choiceText: targetValue });
+          } else {
+            newChoices.push(choice);
+          }
+        }
+
+        setNewQuestion({
+          ...newQuestion,
+          choices: newChoices,
+        });
+      }
     }
   };
 
@@ -211,11 +241,7 @@ function NewQuestion(props: Props) {
       questionId: newQuestion.questionId,
       questionText: newQuestion.questionText,
       type: 'radio',
-      choices: [
-        { choiceId: 1, choiceText: `${newQuestion.questionId}-1 choice.` },
-        { choiceId: 2, choiceText: `${newQuestion.questionId}-2 choice.` },
-        { choiceId: 3, choiceText: `${newQuestion.questionId}-3 choice.` },
-      ],
+      choices: newQuestion.choices,
       answer: 1,
       desc: newQuestion.desc,
     };
@@ -236,6 +262,7 @@ function NewQuestion(props: Props) {
           error={idError}
           onChange={handleChange}
         />
+
         <TextField
           id="questionText"
           label="問題"
@@ -243,6 +270,23 @@ function NewQuestion(props: Props) {
           value={newQuestion.questionText}
           onChange={handleChange}
         />
+
+        <Box>
+          <Typography>選択肢</Typography>
+          {newQuestion.choices.map((choice) => {
+            return (
+              <Box key={choice.choiceId}>
+                <TextField
+                  id={`choices.${choice.choiceId}.choiceText`}
+                  label={`選択肢ID: ${choice.choiceId}`}
+                  value={choice.choiceText}
+                  onChange={handleChange}
+                />
+              </Box>
+            );
+          })}
+        </Box>
+
         <TextField
           id="desc"
           label="解説"
