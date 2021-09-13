@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  Button,
 } from '@material-ui/core';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -18,6 +19,7 @@ import {
   selectSettings,
 } from '../features/settings/settingsSlice';
 import { selectUser } from '../features/user/userSlice';
+import { fetchQuestions } from '../features/questions/questionsSlice';
 
 export const SETTING_LOCAL_KEY = 'ANKI_WEB_TEST_SETTING';
 
@@ -45,6 +47,10 @@ const useStyles = makeStyles((_) => ({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: '20px',
+  },
+  downloadButton: {
+    display: 'flex',
+    padding: '10px 20px 20px 20px',
   },
 }));
 
@@ -81,39 +87,52 @@ export default function AnkiQuesList() {
 
   return (
     <>
-      <Container maxWidth='md' className={classes.home}>
-        <Typography variant='h4'>設定</Typography>
+      <Container maxWidth="md" className={classes.home}>
+        <Typography variant="h4">設定</Typography>
         <Box className={classes.settings}>
           <Box>
-            <Typography variant='h6'>タップモード</Typography>
-            <Typography variant='subtitle2'></Typography>
+            <Typography variant="h6">タップモード</Typography>
+            <Typography variant="subtitle2"></Typography>
             <RadioGroup
-              aria-label='tapModeRadio'
-              name='tapModeRadio'
+              aria-label="tapModeRadio"
+              name="tapModeRadio"
               onChange={changeTapMode}
               className={classes.settingsChoices}
               value={tapMode}
             >
               <FormControlLabel
-                key='tapMode'
-                value='tapMode'
+                key="tapMode"
+                value="tapMode"
                 control={<Radio />}
-                label='タップモード'
+                label="タップモード"
               />
-              <Typography variant='subtitle2'>
+              <Typography variant="subtitle2">
                 <b>回答の選択肢</b>が選択された時点で正解を表示
               </Typography>
 
               <FormControlLabel
-                key='buttonMode'
-                value='buttonMode'
+                key="buttonMode"
+                value="buttonMode"
                 control={<Radio />}
-                label='ボタンモード'
+                label="ボタンモード"
               />
-              <Typography variant='subtitle2'>
+              <Typography variant="subtitle2">
                 <b>正答ボタン</b>が選択された時点で正解を表示
               </Typography>
             </RadioGroup>
+          </Box>
+
+          <Box>
+            <Typography variant="h6">問題再ダウンロード</Typography>
+            <Box className={classes.downloadButton}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => dispatch(fetchQuestions())}
+              >
+                ダウンロード
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Container>
