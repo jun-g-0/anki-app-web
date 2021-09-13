@@ -41,6 +41,7 @@ export const fetchQuestions = createAsyncThunk(
   }
 );
 
+// create と update は動作として同じ firestore の set を使用
 export const updateQuestion = createAsyncThunk(
   'questions/updateQuestions',
   async (question: Question) => {
@@ -54,6 +55,24 @@ export const updateQuestion = createAsyncThunk(
     console.log('updateQuestions ended.');
     console.log(ref);
 
+    return ref;
+  }
+);
+
+export const deleteQuestion = createAsyncThunk(
+  'questions/deleteQuestions',
+  async (questionId: number) => {
+    console.log('deleteQuestion fired.');
+    const ref = await db
+      .collection('demo-qa')
+      .doc(String(questionId))
+      .delete()
+      .then(() => {
+        console.log('Document successfully deleted!');
+      })
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
     return ref;
   }
 );

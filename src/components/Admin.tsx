@@ -4,6 +4,7 @@ import { Box, Container, TextField } from '@material-ui/core';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
+  deleteQuestion,
   fetchQuestions,
   Question,
   selectQuestions,
@@ -56,15 +57,16 @@ export default function AnkiAdmin() {
     dispatch(updateQuestion(question));
   };
 
+  const handleDelete = async (selectedId: number) => {
+    await dispatch(deleteQuestion(selectedId));
+    refreshQuestions();
+  };
+
   return (
     <>
       <Container>
-        <Box>問題再読み込み</Box>
-        <Button variant="contained" color="inherit" onClick={refreshQuestions}>
-          ダウンロード
-        </Button>
+        <NewQuestion refreshQuestions={refreshQuestions} />
 
-        <NewQuestion />
         <Box>既存問題の更新</Box>
         {questionState.map((question) => (
           <Box key={question.questionId}>
@@ -95,9 +97,7 @@ export default function AnkiAdmin() {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => {
-                console.log('test console.');
-              }}
+              onClick={() => handleDelete(question.questionId)}
             >
               削除
             </Button>
@@ -108,7 +108,11 @@ export default function AnkiAdmin() {
   );
 }
 
-function NewQuestion() {
+interface Props {
+  refreshQuestions: () => Promise<void>;
+}
+
+function NewQuestion(props: Props) {
   const dispatch = useAppDispatch();
 
   const [newQuestion, setNewQuestion] = useState({
@@ -156,7 +160,7 @@ function NewQuestion() {
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const question: Question = {
       questionId: newQuestion.questionId,
       questionText: newQuestion.questionText,
@@ -169,7 +173,8 @@ function NewQuestion() {
       answer: 1,
       desc: newQuestion.desc,
     };
-    dispatch(updateQuestion(question));
+    await dispatch(updateQuestion(question));
+    props.refreshQuestions();
   };
 
   return (
