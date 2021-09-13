@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { db } from '../../Firebase';
 
-interface Choice {
+export interface Choice {
   choiceId: number;
   choiceText: string;
 }

@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import { Box, Container, TextField } from '@material-ui/core';
+import { Box, Container, TextField, Typography } from '@material-ui/core';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
+  Choice,
   deleteQuestion,
   fetchQuestions,
   Question,
@@ -19,7 +20,7 @@ export default function AnkiAdmin() {
 
   const refreshQuestions = async () => {
     const response = await dispatch(fetchQuestions());
-    setQuestionState(response.payload as Question[]);
+    await setQuestionState(response.payload as Question[]);
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -31,6 +32,7 @@ export default function AnkiAdmin() {
     const newQuestionState: Question[] = [];
     for (let i = 0; i < questionState.length; i++) {
       const question = questionState[i];
+
       if (String(question.questionId) === targetId) {
         if (targetProperty === 'questionText') {
           newQuestionState.push({
@@ -42,6 +44,29 @@ export default function AnkiAdmin() {
             ...question,
             desc: targetValue,
           });
+        } else if (targetProperty === 'choices') {
+          const targetChoiceId = e.target.id.split('.')[2];
+          const targetChoiceProperty = e.target.id.split('.')[3];
+
+          // IDの変更には未対応
+          if (targetChoiceProperty === 'choiceText') {
+            const newChoices: Choice[] = [];
+
+            for (let j = 0; j < question.choices.length; j++) {
+              const choice = question.choices[j];
+
+              if (choice.choiceId === Number(targetChoiceId)) {
+                newChoices.push({ ...choice, choiceText: targetValue });
+              } else {
+                newChoices.push(choice);
+              }
+            }
+
+            newQuestionState.push({
+              ...question,
+              choices: newChoices,
+            });
+          }
         }
       } else {
         newQuestionState.push(question);
@@ -50,16 +75,17 @@ export default function AnkiAdmin() {
     setQuestionState(newQuestionState);
   };
 
-  const handleUpdate = (selectedId: number) => {
+  const handleUpdate = async (selectedId: number) => {
     const question = questionState.filter(
       (qeustion) => qeustion.questionId === selectedId
     )[0];
-    dispatch(updateQuestion(question));
+    await dispatch(updateQuestion(question));
+    await refreshQuestions();
   };
 
   const handleDelete = async (selectedId: number) => {
     await dispatch(deleteQuestion(selectedId));
-    refreshQuestions();
+    await refreshQuestions();
   };
 
   return (
@@ -67,16 +93,36 @@ export default function AnkiAdmin() {
       <Container>
         <NewQuestion refreshQuestions={refreshQuestions} />
 
-        <Box>既存問題の更新</Box>
+        <Box>
+          <Typography>既存問題の更新</Typography>
+        </Box>
         {questionState.map((question) => (
           <Box key={question.questionId}>
+            <Typography>問題ID: {question.questionId}</Typography>
             <TextField
               id={`${question.questionId}.questionText`}
-              label="ID"
+              label="問題"
               multiline
               value={question.questionText.replaceAll('\\n', '\n')}
               onChange={handleChange}
             />
+
+            <Box>
+              <Typography>選択肢</Typography>
+              {question.choices.map((choice) => {
+                return (
+                  <Box key={choice.choiceId}>
+                    <Typography>選択肢ID: {choice.choiceId}</Typography>
+                    <TextField
+                      id={`${question.questionId}.choices.${choice.choiceId}.choiceText`}
+                      label="選択肢"
+                      value={choice.choiceText}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
 
             <TextField
               id={`${question.questionId}.desc`}
@@ -179,7 +225,9 @@ function NewQuestion(props: Props) {
 
   return (
     <>
-      <Box>新規問題の作成</Box>
+      <Box>
+        <Typography>新規問題の作成</Typography>
+      </Box>
       <Box key="newQuestion">
         <TextField
           id="questionId"
