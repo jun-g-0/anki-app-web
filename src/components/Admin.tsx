@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { Box, Container, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,8 @@ import {
   updateQuestion,
 } from '../features/questions/questionsSlice';
 import { useSnackbar } from 'notistack';
+import { selectUser } from '../features/user/userSlice';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((_) => ({
   admin: {
@@ -72,8 +74,10 @@ export default function AnkiAdmin() {
   const dispatch = useAppDispatch();
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const user = useAppSelector(selectUser);
 
   const [questionState, setQuestionState] = useState(questions);
+  let history = useHistory();
 
   const refreshQuestions = async () => {
     const response = await dispatch(fetchQuestions());
@@ -81,55 +85,40 @@ export default function AnkiAdmin() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const targetId = e.target.id.split('.')[0];
-    const targetProperty = e.target.id.split('.')[1];
+    const [id, property, choiceId, choiceProperty] = e.target.id.split('.');
     const targetValue = e.target.value;
 
     // 新規の問題の配列を作成し、特定のID/プロパティのみ更新する
-    const newQuestionState: Question[] = [];
-    for (let i = 0; i < questionState.length; i++) {
-      const question = questionState[i];
-
-      if (String(question.questionId) === targetId) {
-        if (targetProperty === 'questionText') {
-          newQuestionState.push({
-            ...question,
-            questionText: targetValue,
-          });
-        } else if (targetProperty === 'desc') {
-          newQuestionState.push({
-            ...question,
-            desc: targetValue,
-          });
-        } else if (targetProperty === 'choices') {
-          const targetChoiceId = e.target.id.split('.')[2];
-          const targetChoiceProperty = e.target.id.split('.')[3];
-
-          // IDの変更には未対応
-          if (targetChoiceProperty === 'choiceText') {
-            const newChoices: Choice[] = [];
-
-            for (let j = 0; j < question.choices.length; j++) {
-              const choice = question.choices[j];
-
-              if (choice.choiceId === Number(targetChoiceId)) {
-                newChoices.push({ ...choice, choiceText: targetValue });
-              } else {
-                newChoices.push(choice);
-              }
-            }
-
-            newQuestionState.push({
+    setQuestionState(
+      questionState.map((question) => {
+        if (String(question.questionId) === id) {
+          if (property === 'questionText') {
+            return {
               ...question,
-              choices: newChoices,
-            });
+              questionText: targetValue,
+            };
+          } else if (property === 'desc') {
+            return {
+              ...question,
+              desc: targetValue,
+            };
+          } else if (
+            property === 'choices' &&
+            choiceProperty === 'choiceText'
+          ) {
+            return {
+              ...question,
+              choices: question.choices.map((choice) =>
+                choice.choiceId === Number(choiceId)
+                  ? { ...choice, choiceText: targetValue }
+                  : choice
+              ),
+            };
           }
         }
-      } else {
-        newQuestionState.push(question);
-      }
-    }
-    setQuestionState(newQuestionState);
+        return question;
+      })
+    );
   };
 
   const handleUpdate = async (selectedId: number) => {
@@ -152,6 +141,13 @@ export default function AnkiAdmin() {
       autoHideDuration: 1000,
     });
   };
+
+  useEffect(() => {
+    if (!user.ankiUser?.admin) {
+      console.log(user);
+      history.push('/');
+    }
+  }, [user, history]);
 
   return (
     <>
@@ -264,64 +260,48 @@ function NewQuestion(props: Props) {
   const [idError, setIdError] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const targetProperty = e.target.id.split('.')[0];
+    const [property, choiceId, choiceProperty] = e.target.id.split('.');
     const targetValue = e.target.value;
 
     // 入力されたIDが数字でない場合は警告を表示
     // Validationの共通化はBacklog
-    if (
-      targetProperty === 'questionId' &&
-      !Number.isInteger(Number(targetValue))
-    ) {
+    if (property === 'questionId' && !Number.isInteger(Number(targetValue))) {
       setIdError(true);
     } else if (
-      targetProperty === 'questionId' &&
+      property === 'questionId' &&
       Number.isInteger(Number(targetValue))
     ) {
       setIdError(false);
     }
 
     // 入力したデータの更新
-    if (targetProperty === 'questionText') {
+    if (property === 'questionText') {
       setNewQuestion({
         ...newQuestion,
         questionText: targetValue,
       });
-    } else if (targetProperty === 'desc') {
+    } else if (property === 'desc') {
       setNewQuestion({
         ...newQuestion,
         desc: targetValue,
       });
     } else if (
-      targetProperty === 'questionId' &&
+      property === 'questionId' &&
       Number.isInteger(Number(targetValue))
     ) {
       setNewQuestion({
         ...newQuestion,
         questionId: Number(targetValue),
       });
-    } else if (targetProperty === 'choices') {
-      const targetChoiceId = e.target.id.split('.')[1];
-      const targetChoiceProperty = e.target.id.split('.')[2];
-
-      if (targetChoiceProperty === 'choiceText') {
-        const newChoices: Choice[] = [];
-
-        for (let j = 0; j < newQuestion.choices.length; j++) {
-          const choice = newQuestion.choices[j];
-
-          if (choice.choiceId === Number(targetChoiceId)) {
-            newChoices.push({ ...choice, choiceText: targetValue });
-          } else {
-            newChoices.push(choice);
-          }
-        }
-
-        setNewQuestion({
-          ...newQuestion,
-          choices: newChoices,
-        });
-      }
+    } else if (property === 'choices' && choiceProperty === 'choiceText') {
+      setNewQuestion({
+        ...newQuestion,
+        choices: newQuestion.choices.map((choice) =>
+          choice.choiceId === Number(choiceId)
+            ? { ...choice, choiceText: targetValue }
+            : choice
+        ),
+      });
     }
   };
 
