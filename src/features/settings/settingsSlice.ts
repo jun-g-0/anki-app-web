@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { db } from '../../Firebase';
 
-type ThemeType = 'auto' | 'light' | 'dark' | 'custom';
+type ThemeType = 'auto' | 'light' | 'dark';
 
 export interface Settings {
   tapMode: 'tapMode' | 'buttonMode';

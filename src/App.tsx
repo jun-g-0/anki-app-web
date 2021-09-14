@@ -22,7 +22,10 @@ import {
 } from './features/questions/questionsSlice';
 import { fetchUser, selectUser } from './features/user/userSlice';
 import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
-import { fetchSettings } from './features/settings/settingsSlice';
+import {
+  fetchSettings,
+  selectSettingsTheme,
+} from './features/settings/settingsSlice';
 import { createMuiTheme, useMediaQuery } from '@material-ui/core';
 
 // React
@@ -32,6 +35,7 @@ function App() {
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
   const user = useAppSelector(selectUser);
+  const settingsTheme = useAppSelector(selectSettingsTheme);
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
@@ -39,10 +43,15 @@ function App() {
     () =>
       createMuiTheme({
         palette: {
-          type: prefersDarkMode ? 'dark' : 'light',
+          type:
+            settingsTheme === 'auto'
+              ? prefersDarkMode
+                ? 'dark'
+                : 'light'
+              : settingsTheme,
         },
       }),
-    [prefersDarkMode]
+    [prefersDarkMode, settingsTheme]
   );
 
   const handleDrawerOpen = () => {
