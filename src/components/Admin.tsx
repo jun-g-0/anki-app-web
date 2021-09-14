@@ -22,7 +22,7 @@ const useStyles = makeStyles((_) => ({
     alignItems: 'left',
     justifyContent: 'space-around',
     flexDirection: 'column',
-    padding: '20px',
+    padding: '0px 20px 40px 20px',
   },
   adminBlocks: {
     display: 'flex',
