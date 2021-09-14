@@ -26,7 +26,31 @@ import {
   fetchSettings,
   selectSettingsTheme,
 } from './features/settings/settingsSlice';
-import { createMuiTheme, useMediaQuery } from '@material-ui/core';
+import { createMuiTheme, PaletteType, useMediaQuery } from '@material-ui/core';
+
+const darkTheme = {
+  palette: {
+    type: 'dark' as PaletteType,
+    primary: {
+      main: '#1565C0',
+    },
+    secondary: {
+      main: '#FF5252',
+    },
+  },
+};
+
+const lightTheme = {
+  palette: {
+    type: 'light' as PaletteType,
+    primary: {
+      main: '#B3E5FC',
+    },
+    secondary: {
+      main: '#D32F2F',
+    },
+  },
+};
 
 // React
 function App() {
@@ -39,20 +63,16 @@ function App() {
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const theme = React.useMemo(
-    () =>
-      createMuiTheme({
-        palette: {
-          type:
-            settingsTheme === 'auto'
-              ? prefersDarkMode
-                ? 'dark'
-                : 'light'
-              : settingsTheme,
-        },
-      }),
-    [prefersDarkMode, settingsTheme]
-  );
+  const theme = React.useMemo(() => {
+    const basicTheme =
+      settingsTheme === 'auto'
+        ? prefersDarkMode
+          ? 'dark'
+          : 'light'
+        : settingsTheme;
+
+    return createMuiTheme(basicTheme === 'dark' ? darkTheme : lightTheme);
+  }, [prefersDarkMode, settingsTheme]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
