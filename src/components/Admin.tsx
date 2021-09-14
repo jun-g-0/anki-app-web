@@ -2,6 +2,8 @@ import { ChangeEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { Box, Container, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -55,6 +57,12 @@ const useStyles = makeStyles((_) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '40%',
+  },
+  adminChoiceTitle: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: '10px 0px 0px 0px',
   },
 }));
 
@@ -306,6 +314,29 @@ function NewQuestion(props: Props) {
     }
   };
 
+  const handleAdd = () => {
+    const newChoices = [...newQuestion.choices];
+    newChoices.push({
+      choiceId: newQuestion.choices.length + 1,
+      choiceText: ``,
+    });
+
+    setNewQuestion({
+      ...newQuestion,
+      choices: newChoices,
+    });
+  };
+
+  const handleRemove = () => {
+    const newChoices = [...newQuestion.choices];
+    newChoices.pop();
+
+    setNewQuestion({
+      ...newQuestion,
+      choices: newChoices,
+    });
+  };
+
   const handleCreate = async () => {
     const question: Question = {
       questionId: newQuestion.questionId,
@@ -342,7 +373,15 @@ function NewQuestion(props: Props) {
           onChange={handleChange}
         />
 
-        <Typography variant="subtitle1">選択肢</Typography>
+        <Box className={classes.adminChoiceTitle}>
+          <Typography variant="subtitle1">選択肢</Typography>
+          <Button onClick={handleAdd}>
+            <AddCircleOutlineIcon />
+          </Button>
+          <Button onClick={handleRemove}>
+            <RemoveCircleOutlineIcon />
+          </Button>
+        </Box>
         <Box className={classes.adminChoices}>
           {newQuestion.choices.map((choice) => {
             return (
