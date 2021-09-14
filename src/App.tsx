@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/styles';
 
 // for components
 import AnkiDrawer from './components/Drawer';
@@ -22,6 +23,7 @@ import {
 import { fetchUser, selectUser } from './features/user/userSlice';
 import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
 import { fetchSettings } from './features/settings/settingsSlice';
+import { createMuiTheme, useMediaQuery } from '@material-ui/core';
 
 // React
 function App() {
@@ -30,6 +32,18 @@ function App() {
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
   const user = useAppSelector(selectUser);
+
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const theme = React.useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type: prefersDarkMode ? 'dark' : 'light',
+        },
+      }),
+    [prefersDarkMode]
+  );
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -58,31 +72,33 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <CssBaseline />
-        <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
 
-        <AnkiDrawer
-          handleDrawerClose={handleDrawerClose}
-          open={open}
-        ></AnkiDrawer>
+          <AnkiDrawer
+            handleDrawerClose={handleDrawerClose}
+            open={open}
+          ></AnkiDrawer>
 
-        <Switch>
-          <Route exact path="/">
-            <AnkiHome />
-          </Route>
-          <Route path="/training">
-            <AnkiTraining />
-          </Route>
-          <Route path="/queslist">
-            <AnkiQuesList />
-          </Route>
-          <Route path="/settings">
-            <AnkiSetting />
-          </Route>
-          <Route path="/admin">
-            <AnkiAdmin />
-          </Route>
-        </Switch>
+          <Switch>
+            <Route exact path="/">
+              <AnkiHome />
+            </Route>
+            <Route path="/training">
+              <AnkiTraining />
+            </Route>
+            <Route path="/queslist">
+              <AnkiQuesList />
+            </Route>
+            <Route path="/settings">
+              <AnkiSetting />
+            </Route>
+            <Route path="/admin">
+              <AnkiAdmin />
+            </Route>
+          </Switch>
+        </ThemeProvider>
       </BrowserRouter>
     </>
   );
