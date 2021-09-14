@@ -14,6 +14,7 @@ import {
   selectQuestions,
   updateQuestion,
 } from '../features/questions/questionsSlice';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((_) => ({
   admin: {
@@ -70,12 +71,13 @@ export default function AnkiAdmin() {
   const questions = useAppSelector(selectQuestions);
   const dispatch = useAppDispatch();
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [questionState, setQuestionState] = useState(questions);
 
   const refreshQuestions = async () => {
     const response = await dispatch(fetchQuestions());
-    await setQuestionState(response.payload as Question[]);
+    setQuestionState(response.payload as Question[]);
   };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -136,11 +138,19 @@ export default function AnkiAdmin() {
     )[0];
     await dispatch(updateQuestion(question));
     await refreshQuestions();
+    enqueueSnackbar('問題の更新が完了しました。', {
+      variant: 'success',
+      autoHideDuration: 1000,
+    });
   };
 
   const handleDelete = async (selectedId: number) => {
     await dispatch(deleteQuestion(selectedId));
     await refreshQuestions();
+    enqueueSnackbar('問題の削除が完了しました。', {
+      variant: 'success',
+      autoHideDuration: 1000,
+    });
   };
 
   return (
@@ -238,6 +248,7 @@ interface Props {
 function NewQuestion(props: Props) {
   const dispatch = useAppDispatch();
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [newQuestion, setNewQuestion] = useState({
     questionId: 0,
@@ -338,6 +349,18 @@ function NewQuestion(props: Props) {
   };
 
   const handleCreate = async () => {
+    // validation の共通化は Backlog
+    if (newQuestion.questionId === 0) {
+      enqueueSnackbar('問題IDを入力してください。', {
+        variant: 'warning',
+      });
+      return;
+    }
+    if (newQuestion.choices.length === 0) {
+      enqueueSnackbar('選択肢は1つ以上必要です。', { variant: 'warning' });
+      return;
+    }
+
     const question: Question = {
       questionId: newQuestion.questionId,
       questionText: newQuestion.questionText,
@@ -346,8 +369,13 @@ function NewQuestion(props: Props) {
       answer: 1,
       desc: newQuestion.desc,
     };
-    await dispatch(updateQuestion(question));
-    props.refreshQuestions();
+    const result = await dispatch(updateQuestion(question));
+    await props.refreshQuestions();
+    console.log('result: ', result);
+    enqueueSnackbar('問題の作成が完了しました。', {
+      variant: 'success',
+      autoHideDuration: 1000,
+    });
   };
 
   return (
@@ -374,7 +402,7 @@ function NewQuestion(props: Props) {
         />
 
         <Box className={classes.adminChoiceTitle}>
-          <Typography variant="subtitle1">選択肢</Typography>
+          <Typography variant="subtitle1">選択肢(正解はID1固定)</Typography>
           <Button onClick={handleAdd}>
             <AddCircleOutlineIcon />
           </Button>

@@ -45,16 +45,10 @@ export const fetchQuestions = createAsyncThunk(
 export const updateQuestion = createAsyncThunk(
   'questions/updateQuestions',
   async (question: Question) => {
-    console.log('updateQuestions fired.');
-    console.log('updateQuestions question: ', question);
     const ref = await db
       .collection('demo-qa')
       .doc(String(question.questionId))
       .set(question);
-
-    console.log('updateQuestions ended.');
-    console.log(ref);
-
     return ref;
   }
 );
@@ -62,7 +56,6 @@ export const updateQuestion = createAsyncThunk(
 export const deleteQuestion = createAsyncThunk(
   'questions/deleteQuestions',
   async (questionId: number) => {
-    console.log('deleteQuestion fired.');
     const ref = await db
       .collection('demo-qa')
       .doc(String(questionId))
