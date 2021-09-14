@@ -144,7 +144,6 @@ export default function AnkiAdmin() {
 
   useEffect(() => {
     if (!user.ankiUser?.admin) {
-      console.log(user);
       history.push('/');
     }
   }, [user, history]);
