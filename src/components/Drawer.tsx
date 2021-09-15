@@ -16,6 +16,7 @@ import ListIcon from '@material-ui/icons/List';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 
 import { useHistory } from 'react-router-dom';
 
@@ -74,6 +75,10 @@ export default function AnkiDrawer(props: Props) {
 
   function handleClickSetting() {
     history.push('/settings');
+  }
+
+  function handleClickAdmin() {
+    history.push('/admin');
   }
 
   return (
@@ -154,6 +159,22 @@ export default function AnkiDrawer(props: Props) {
             </ListItemIcon>
             <ListItemText primary='設定変更' />
           </ListItem>
+
+          {user.isSignedIn === 'signedIn' && user.ankiUser?.admin && (
+            <ListItem
+              button
+              key='admin'
+              onClick={() => {
+                props.handleDrawerClose();
+                handleClickAdmin();
+              }}
+            >
+              <ListItemIcon>
+                <SettingsApplicationsIcon />
+              </ListItemIcon>
+              <ListItemText primary='問題管理画面' />
+            </ListItem>
+          )}
 
           {user.isSignedIn === 'signedIn' && (
             <ListItem

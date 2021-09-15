@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import firebase, { auth } from '../../Firebase';
+import firebase, { auth, db } from '../../Firebase';
 
 interface AnkiUser {
   uid: string;
   displayName: string;
   email: string;
+  admin: boolean;
 }
 
 export interface UserState {
@@ -31,15 +32,31 @@ function authPromise(): Promise<firebase.User> {
   });
 }
 
+// admin権限を保持しているか、確認する(Admin権限の付与はDB手動作業)
+function checkAdmin(userUid: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    db.collection('demoAdmin')
+      .doc(userUid)
+      .get()
+      .then((doc) => resolve(doc.exists))
+      .catch((error) => {
+        console.log('Firestore Error getting document demoAdmin:', error);
+        reject();
+      });
+  });
+}
+
 // 自作したuserを返すPromiseを呼び出し、返却されたPromise(Async/Await)をcreateAsyncThunkで書く
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
-  const response = (await authPromise()) as firebase.User;
+  const response = await authPromise();
   const persedUser: AnkiUser = {
     uid: response.uid,
     email: typeof response.email === 'string' ? response.email : '',
     displayName:
       typeof response.displayName === 'string' ? response.displayName : '',
+    admin: await checkAdmin(response.uid),
   };
+
   return persedUser;
 });
 
@@ -55,11 +72,7 @@ export const userSlice = createSlice({
     builder
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.isSignedIn = 'signedIn';
-        state.ankiUser = {
-          uid: action.payload.uid,
-          email: action.payload.email,
-          displayName: action.payload.displayName,
-        };
+        state.ankiUser = action.payload;
       })
       .addCase(fetchUser.rejected, (state) => {
         state.isSignedIn = 'NotSignedIn';

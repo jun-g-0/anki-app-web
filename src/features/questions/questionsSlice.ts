@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { db } from '../../Firebase';
 
-interface Choice {
+export interface Choice {
   choiceId: number;
   choiceText: string;
 }
@@ -38,6 +38,35 @@ export const fetchQuestions = createAsyncThunk(
     });
     questions.sort((a, b) => +a.questionId - +b.questionId);
     return questions;
+  }
+);
+
+// create と update は動作として同じ firestore の set を使用
+export const updateQuestion = createAsyncThunk(
+  'questions/updateQuestions',
+  async (question: Question) => {
+    const ref = await db
+      .collection('demo-qa')
+      .doc(String(question.questionId))
+      .set(question);
+    return ref;
+  }
+);
+
+export const deleteQuestion = createAsyncThunk(
+  'questions/deleteQuestions',
+  async (questionId: number) => {
+    const ref = await db
+      .collection('demo-qa')
+      .doc(String(questionId))
+      .delete()
+      .then(() => {
+        console.log('Document successfully deleted!');
+      })
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
+    return ref;
   }
 );
 
