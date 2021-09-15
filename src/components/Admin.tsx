@@ -7,7 +7,6 @@ import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  Choice,
   deleteQuestion,
   fetchQuestions,
   Question,
