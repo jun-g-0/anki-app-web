@@ -123,9 +123,11 @@ function App() {
             <Route path="/settings">
               <AnkiSetting />
             </Route>
-            <Route path="/admin">
-              <AnkiAdmin />
-            </Route>
+            {user.ankiUser?.admin && ( // admin権限をルーティングの前提に
+              <Route path="/admin">
+                <AnkiAdmin />
+              </Route>
+            )}
           </Switch>
         </ThemeProvider>
       </BrowserRouter>

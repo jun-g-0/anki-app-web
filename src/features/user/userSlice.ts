@@ -33,18 +33,12 @@ function authPromise(): Promise<firebase.User> {
 }
 
 // admin権限を保持しているか、確認する(Admin権限の付与はDB手動作業)
-function fetchAdmin(userUid: string): Promise<boolean> {
+function checkAdmin(userUid: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     db.collection('demoAdmin')
       .doc(userUid)
       .get()
-      .then((doc) => {
-        if (doc.exists) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      })
+      .then((doc) => resolve(doc.exists))
       .catch((error) => {
         console.log('Firestore Error getting document demoAdmin:', error);
         reject();
@@ -60,7 +54,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
     email: typeof response.email === 'string' ? response.email : '',
     displayName:
       typeof response.displayName === 'string' ? response.displayName : '',
-    admin: await fetchAdmin(response.uid),
+    admin: await checkAdmin(response.uid),
   };
 
   return persedUser;

@@ -160,7 +160,7 @@ export default function AnkiDrawer(props: Props) {
             <ListItemText primary='設定変更' />
           </ListItem>
 
-          {user.isSignedIn === 'signedIn' && user.ankiUser?.admin === true && (
+          {user.isSignedIn === 'signedIn' && user.ankiUser?.admin && (
             <ListItem
               button
               key='admin'
