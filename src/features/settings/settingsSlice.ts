@@ -1,10 +1,12 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { db } from '../../Firebase';
 
+type ThemeType = 'auto' | 'light' | 'dark';
+
 export interface Settings {
   tapMode: 'tapMode' | 'buttonMode';
-  theme: 'white' | 'dark' | 'cat' | 'custom';
+  theme: ThemeType;
 }
 
 export interface SettingsState {
@@ -14,7 +16,7 @@ export interface SettingsState {
 export const initialState: SettingsState = {
   settings: {
     tapMode: 'tapMode',
-    theme: 'white',
+    theme: 'auto',
   },
 };
 
@@ -41,7 +43,7 @@ export function fetchSettingsFirestore(userUid: string, settings: Settings) {
 
 export const fetchSettings = createAsyncThunk(
   'settings/fetch',
-  async (payload: { userUid: string; }, thunkAPI) => {
+  async (payload: { userUid: string }, thunkAPI) => {
     // 初回のログイン時には、Reduxでローカルに保管していたデータをアップロードする
     const rootState = thunkAPI.getState() as RootState;
     const settings = rootState.settings.settings;
@@ -76,6 +78,9 @@ export const settingsSlice = createSlice({
     setButtonMode: (state) => {
       state.settings.tapMode = 'buttonMode';
     },
+    setTheme: (state, action: PayloadAction<ThemeType>) => {
+      state.settings.theme = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSettings.fulfilled, (state, action) => {
@@ -86,7 +91,7 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const { setTapMode, setButtonMode } = settingsSlice.actions;
+export const { setTapMode, setButtonMode, setTheme } = settingsSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -94,5 +99,7 @@ export const { setTapMode, setButtonMode } = settingsSlice.actions;
 export const selectSettings = (state: RootState) => state.settings.settings;
 export const selectSettingsTapMode = (state: RootState) =>
   state.settings.settings.tapMode;
+export const selectSettingsTheme = (state: RootState) =>
+  state.settings.settings.theme;
 
 export default settingsSlice.reducer;

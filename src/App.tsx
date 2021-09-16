@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 // for design
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/styles';
 
 // for components
 import AnkiDrawer from './components/Drawer';
@@ -21,7 +22,35 @@ import {
 } from './features/questions/questionsSlice';
 import { fetchUser, selectUser } from './features/user/userSlice';
 import { fetchAnswerLog } from './features/answerLog/answerLogSlice';
-import { fetchSettings } from './features/settings/settingsSlice';
+import {
+  fetchSettings,
+  selectSettingsTheme,
+} from './features/settings/settingsSlice';
+import { createMuiTheme, PaletteType, useMediaQuery } from '@material-ui/core';
+
+const darkTheme = {
+  palette: {
+    type: 'dark' as PaletteType,
+    primary: {
+      main: '#1565C0',
+    },
+    secondary: {
+      main: '#FF5252',
+    },
+  },
+};
+
+const lightTheme = {
+  palette: {
+    type: 'light' as PaletteType,
+    primary: {
+      main: '#B3E5FC',
+    },
+    secondary: {
+      main: '#D32F2F',
+    },
+  },
+};
 
 // React
 function App() {
@@ -30,6 +59,20 @@ function App() {
   const dispatch = useAppDispatch();
   const questionsLastUpdate = useAppSelector(selectQuestionsLastUpdate);
   const user = useAppSelector(selectUser);
+  const settingsTheme = useAppSelector(selectSettingsTheme);
+
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const theme = React.useMemo(() => {
+    const basicTheme =
+      settingsTheme === 'auto'
+        ? prefersDarkMode
+          ? 'dark'
+          : 'light'
+        : settingsTheme;
+
+    return createMuiTheme(basicTheme === 'dark' ? darkTheme : lightTheme);
+  }, [prefersDarkMode, settingsTheme]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -58,33 +101,35 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <CssBaseline />
-        <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AnkiAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
 
-        <AnkiDrawer
-          handleDrawerClose={handleDrawerClose}
-          open={open}
-        ></AnkiDrawer>
+          <AnkiDrawer
+            handleDrawerClose={handleDrawerClose}
+            open={open}
+          ></AnkiDrawer>
 
-        <Switch>
-          <Route exact path="/">
-            <AnkiHome />
-          </Route>
-          <Route path="/training">
-            <AnkiTraining />
-          </Route>
-          <Route path="/queslist">
-            <AnkiQuesList />
-          </Route>
-          <Route path="/settings">
-            <AnkiSetting />
-          </Route>
-          {user.ankiUser?.admin && ( // admin権限をルーティングの前提に
-            <Route path="/admin">
-              <AnkiAdmin />
+          <Switch>
+            <Route exact path="/">
+              <AnkiHome />
             </Route>
-          )}
-        </Switch>
+            <Route path="/training">
+              <AnkiTraining />
+            </Route>
+            <Route path="/queslist">
+              <AnkiQuesList />
+            </Route>
+            <Route path="/settings">
+              <AnkiSetting />
+            </Route>
+            {user.ankiUser?.admin && ( // admin権限をルーティングの前提に
+              <Route path="/admin">
+                <AnkiAdmin />
+              </Route>
+            )}
+          </Switch>
+        </ThemeProvider>
       </BrowserRouter>
     </>
   );

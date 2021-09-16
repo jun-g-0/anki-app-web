@@ -40,9 +40,6 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-around',
     padding: '20px',
   },
-  afterAnswer: {
-    color: 'green',
-  },
 }));
 
 export default function AnkiTraining() {
@@ -137,7 +134,6 @@ export default function AnkiTraining() {
                         value={String(e.choiceId)}
                         control={<Radio />}
                         label={e.choiceText}
-                        className={answered ? classes.afterAnswer : undefined}
                       />
                     ))
                   }
@@ -162,7 +158,7 @@ export default function AnkiTraining() {
               String(
                 session.currentSession.selectedAnswers[question.questionId]
               ) === String(question.answer) ? (
-                <p>正解です!🎉</p>
+                <p>正解です。</p>
               ) : answered ? (
                 <p>不正解です。</p>
               ) : null}

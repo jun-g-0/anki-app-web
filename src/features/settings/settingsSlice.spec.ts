@@ -6,12 +6,9 @@ import settingsReducer, {
 
 describe('settings reducer', () => {
   it('should handle initial state', () => {
-    expect(settingsReducer(undefined, { type: 'unknown' })).toEqual({
-      settings: {
-        tapMode: 'tapMode',
-        theme: 'white',
-      },
-    });
+    expect(settingsReducer(undefined, { type: 'unknown' })).toEqual(
+      initialState
+    );
   });
 
   it('should handle tapMode/tapMode', () => {

@@ -17,6 +17,8 @@ import {
   selectSettingsTapMode,
   uploadSettings,
   selectSettings,
+  selectSettingsTheme,
+  setTheme,
 } from '../features/settings/settingsSlice';
 import { selectUser } from '../features/user/userSlice';
 import { fetchQuestions } from '../features/questions/questionsSlice';
@@ -58,6 +60,7 @@ export default function AnkiQuesList() {
   const classes = useStyles();
   const settings = useAppSelector(selectSettings);
   const tapMode = useAppSelector(selectSettingsTapMode);
+  const theme = useAppSelector(selectSettingsTheme);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
 
@@ -80,6 +83,25 @@ export default function AnkiQuesList() {
       case 'buttonMode':
         dispatch(setButtonMode());
         break;
+      default:
+        break;
+    }
+  };
+
+  const changeTheme = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTheme = e.target.value as string;
+
+    switch (newTheme) {
+      case 'auto':
+        dispatch(setTheme('auto'));
+        break;
+      case 'light':
+        dispatch(setTheme('light'));
+        break;
+      case 'dark':
+        dispatch(setTheme('dark'));
+        break;
+
       default:
         break;
     }
@@ -118,6 +140,46 @@ export default function AnkiQuesList() {
               />
               <Typography variant="subtitle2">
                 <b>正答ボタン</b>が選択された時点で正解を表示
+              </Typography>
+            </RadioGroup>
+          </Box>
+
+          <Box>
+            <Typography variant="h6">カラーテーマ</Typography>
+            <Typography variant="subtitle2"></Typography>
+            <RadioGroup
+              onChange={changeTheme}
+              className={classes.settingsChoices}
+              value={theme}
+            >
+              <FormControlLabel
+                key="auto"
+                value="auto"
+                control={<Radio />}
+                label="ブラウザ"
+              />
+              <Typography variant="subtitle2">
+                ブラウザの設定に従い、ライトモードまたはダークモードで表示します。
+              </Typography>
+
+              <FormControlLabel
+                key="dark"
+                value="dark"
+                control={<Radio />}
+                label="ダークモード"
+              />
+              <Typography variant="subtitle2">
+                <b>黒</b>を基調としたカラーテーマです。
+              </Typography>
+
+              <FormControlLabel
+                key="light"
+                value="light"
+                control={<Radio />}
+                label="ライトモード"
+              />
+              <Typography variant="subtitle2">
+                <b>白</b>を基調としたカラーテーマです。
               </Typography>
             </RadioGroup>
           </Box>
