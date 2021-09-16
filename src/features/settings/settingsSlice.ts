@@ -7,6 +7,7 @@ type ThemeType = 'auto' | 'light' | 'dark';
 export interface Settings {
   tapMode: 'tapMode' | 'buttonMode';
   theme: ThemeType;
+  random: boolean;
 }
 
 export interface SettingsState {
@@ -17,6 +18,7 @@ export const initialState: SettingsState = {
   settings: {
     tapMode: 'tapMode',
     theme: 'auto',
+    random: true,
   },
 };
 
@@ -81,6 +83,9 @@ export const settingsSlice = createSlice({
     setTheme: (state, action: PayloadAction<ThemeType>) => {
       state.settings.theme = action.payload;
     },
+    setRandom: (state, action: PayloadAction<boolean>) => {
+      state.settings.random = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSettings.fulfilled, (state, action) => {
@@ -91,7 +96,7 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const { setTapMode, setButtonMode, setTheme } = settingsSlice.actions;
+export const { setTapMode, setButtonMode, setTheme, setRandom } = settingsSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -101,5 +106,7 @@ export const selectSettingsTapMode = (state: RootState) =>
   state.settings.settings.tapMode;
 export const selectSettingsTheme = (state: RootState) =>
   state.settings.settings.theme;
+export const selectSettingsRandom = (state: RootState) =>
+  state.settings.settings.random;
 
 export default settingsSlice.reducer;

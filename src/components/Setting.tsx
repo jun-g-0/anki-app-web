@@ -19,6 +19,8 @@ import {
   selectSettings,
   selectSettingsTheme,
   setTheme,
+  selectSettingsRandom,
+  setRandom,
 } from '../features/settings/settingsSlice';
 import { selectUser } from '../features/user/userSlice';
 import { fetchQuestions } from '../features/questions/questionsSlice';
@@ -74,6 +76,10 @@ export default function AnkiQuesList() {
       );
     }
   }, [user, dispatch, settings]);
+
+  const handleReFetch = () => {
+    dispatch(fetchQuestions());
+  };
 
   const changeTapMode = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.value as string) {
@@ -184,13 +190,15 @@ export default function AnkiQuesList() {
             </RadioGroup>
           </Box>
 
+          <SettingsRandom />
+
           <Box>
             <Typography variant="h6">問題再ダウンロード</Typography>
             <Box className={classes.downloadButton}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => dispatch(fetchQuestions())}
+                onClick={handleReFetch}
               >
                 ダウンロード
               </Button>
@@ -199,5 +207,54 @@ export default function AnkiQuesList() {
         </Box>
       </Container>
     </>
+  );
+}
+
+function SettingsRandom() {
+  const classes = useStyles();
+  const dispatch = useAppDispatch();
+
+  const random = useAppSelector(selectSettingsRandom);
+  const changeRandom = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedTheme = e.target.value as string;
+
+    switch (selectedTheme) {
+      case 'true':
+        dispatch(setRandom(true));
+        break;
+      case 'false':
+        dispatch(setRandom(false));
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  return (
+    <Box>
+      <Typography variant="h6">ランダムモード</Typography>
+      <Typography variant="subtitle2"></Typography>
+      <RadioGroup
+        aria-label="randomRadio"
+        name="randomRadio"
+        onChange={changeRandom}
+        className={classes.settingsChoices}
+        value={String(random)}
+      >
+        <FormControlLabel
+          key="true"
+          value="true"
+          control={<Radio />}
+          label="ランダムに選択肢を並び変える"
+        />
+        <FormControlLabel
+          key="false"
+          value="false"
+          control={<Radio />}
+          label="ランダムに選択肢を並び変えない"
+        />
+      </RadioGroup>
+    </Box>
   );
 }
