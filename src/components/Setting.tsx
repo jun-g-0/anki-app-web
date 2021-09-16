@@ -77,6 +77,10 @@ export default function AnkiQuesList() {
     }
   }, [user, dispatch, settings]);
 
+  const handleReFetch = () => {
+    dispatch(fetchQuestions());
+  };
+
   const changeTapMode = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.value as string) {
       case 'tapMode':
@@ -194,7 +198,7 @@ export default function AnkiQuesList() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => dispatch(fetchQuestions())}
+                onClick={handleReFetch}
               >
                 ダウンロード
               </Button>

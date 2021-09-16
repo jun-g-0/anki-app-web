@@ -13,7 +13,11 @@ import AnkiResult from './Result';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectSettings } from '../features/settings/settingsSlice';
-import { selectQuestions } from '../features/questions/questionsSlice';
+import {
+  selectQuestions,
+  Choice,
+  Question,
+} from '../features/questions/questionsSlice';
 import { logUpdate } from '../features/answerLog/answerLogSlice';
 import {
   sessionInit,
@@ -42,6 +46,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const shuffle = (choices: Choice[]): Choice[] => {
+  const array = [...choices];
+
+  // Fisher–Yates shuffle
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 export default function AnkiTraining() {
   const classes = useStyles();
   let { path, url } = useRouteMatch();
@@ -49,10 +64,23 @@ export default function AnkiTraining() {
   const dispatch = useAppDispatch();
 
   // selectors
-  const questions = useAppSelector(selectQuestions);
+  const allQuestions = useAppSelector(selectQuestions);
   const session = useAppSelector(selectSession);
   const quesNum = useAppSelector(selectSessionQuesNum);
   const settings = useAppSelector(selectSettings);
+
+  const questions: Question[] = useMemo(
+    () =>
+      allQuestions.map((question) => {
+        return {
+          ...question,
+          choices: settings.random
+            ? shuffle(question.choices)
+            : question.choices,
+        };
+      }),
+    [allQuestions, settings.random]
+  );
 
   // question now
   const question = useMemo(() => questions[quesNum], [questions, quesNum]);
