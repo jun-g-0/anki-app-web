@@ -216,9 +216,9 @@ function SettingsRandom() {
 
   const random = useAppSelector(selectSettingsRandom);
   const changeRandom = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTheme = e.target.value as string;
+    const selectedTheme = e.target.value as string;
 
-    switch (newTheme) {
+    switch (selectedTheme) {
       case 'true':
         dispatch(setRandom(true));
         break;
