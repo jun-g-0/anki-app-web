@@ -28,7 +28,8 @@ const useStyles = makeStyles((_) => ({
   adminBlocks: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '20px 20px 0px 20px',
+    padding: '20px 20px 20px 20px',
+    gap: '10px',
   },
   adminQuestions: {
     display: 'flex',
@@ -374,7 +375,9 @@ function NewQuestion(props: Props) {
           id="questionText"
           label="問題文"
           multiline
-          rows={2}
+          rows={3}
+          rowsMax={10}
+          variant="outlined"
           value={newQuestion.questionText}
           onChange={handleChange}
         />
@@ -407,7 +410,9 @@ function NewQuestion(props: Props) {
           id="desc"
           label="解説"
           multiline
-          rows={2}
+          rows={3}
+          rowsMax={10}
+          variant="outlined"
           value={newQuestion.desc}
           onChange={handleChange}
         />

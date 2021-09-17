@@ -128,6 +128,9 @@ function App() {
                 <AnkiAdmin />
               </Route>
             )}
+            <Route path="*">
+              <AnkiHome />
+            </Route>
           </Switch>
         </ThemeProvider>
       </BrowserRouter>
